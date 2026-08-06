@@ -734,6 +734,7 @@ currentPath = nextPath;
 [1,2,3,4].forEach(q => {
 document.getElementById('tabPath'+q).classList.toggle('active', q === nextPath);
 });
+try{ localStorage.setItem('droid-tycoon-currentpath-p34', String(nextPath)); }catch(e){}
 queueSave();
 render();
 });
@@ -744,6 +745,7 @@ currentPath = p;
 [1,2,3,4].forEach(q => {
 document.getElementById('tabPath'+q).classList.toggle('active', q === p);
 });
+try{ localStorage.setItem('droid-tycoon-currentpath-p34', String(p)); }catch(e){}
 renderMain();
 });
 });
@@ -830,9 +832,23 @@ document.getElementById('feedbackModal').style.display = 'none';
 document.getElementById('feedbackText').value = '';
 });
 
+async function loadPathPref(){
+try{
+const v = localStorage.getItem('droid-tycoon-currentpath-p34');
+const p = parseInt(v, 10);
+if(p >= 1 && p <= 4){
+currentPath = p;
+[1,2,3,4].forEach(q => {
+document.getElementById('tabPath'+q).classList.toggle('active', q === p);
+});
+}
+}catch(e){}
+}
+
 async function init(){
 await loadLangPref();
 await loadCompactPref();
+await loadPathPref();
 await loadInventory();
 scrollToCurrent();
 }
