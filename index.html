@@ -3,377 +3,494 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Droid Tycoon Rebirth Tracker — Path 3 / Path 4</title>
+<title>Droid Tycoon Rebirth Tracker</title>
 <style>
-  :root{
-    --bg:#0d1117;
-    --panel:#161b22;
-    --panel2:#1c2230;
-    --border:#2a3140;
-    --text:#e6edf3;
-    --muted:#8b96a5;
-    --accent:#4fc3f7;
-    --gold:#f2c14e;
-    --diamond:#7fdbff;
-    --rainbow:#ff6ec7;
-    --beskar:#c0c0c0;
-    --galactic:#a78bfa;
-    --base:#9fd88a;
-    --good:#3fb950;
-    --bad:#f85149;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:radial-gradient(circle at top left,#111a2b,#0a0e14 60%);
-    color:var(--text);
-    padding:20px;
-  }
-  h1{font-size:1.4rem;margin:0 0 4px 0;letter-spacing:.5px;}
-  .subtitle{color:var(--muted);font-size:.85rem;margin-bottom:14px;}
-  .path-tabs{display:flex;gap:8px;margin-bottom:16px;}
-  .path-tab{
-    padding:8px 18px;
-    border-radius:8px;
-    border:1px solid var(--border);
-    background:var(--panel2);
-    color:var(--muted);
-    cursor:pointer;
-    font-weight:600;
-    font-size:.9rem;
-  }
-  .path-tab.active{
-    background:linear-gradient(135deg,#1a2540,#111827);
-    border-color:var(--accent);
-    color:var(--accent);
-  }
-  .path-note{font-size:.75rem;color:var(--muted);margin:-8px 0 14px 0;}
-  .compact-toggle{
-    background:var(--panel2);border:1px solid var(--border);color:var(--text);
-    border-radius:8px;padding:8px 14px;font-size:.85rem;cursor:pointer;
-    margin-bottom:14px;font-weight:600;
-  }
-  .compact-toggle.active{border-color:var(--accent);color:var(--accent);}
-  body.compact .hide-in-compact{display:none;}
-  body.compact .layout{grid-template-columns:1fr;}
-  body.compact .now-box{
-    position:sticky;top:12px;z-index:5;
-    box-shadow:0 8px 24px rgba(0,0,0,.5);
-  }
-  body.compact .lvl{font-size:2rem;}
-  body.compact .need-chip{font-size:1rem;padding:8px 12px;}
-  body.compact .tier-tag{font-size:.85rem;padding:2px 8px;}
-  body.compact h1{font-size:1.1rem;}
-  body.compact .subtitle, body.compact .footnote{display:none;}
-  .layout{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start;}
-  @media (max-width:900px){.layout{grid-template-columns:1fr;}}
-  .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;}
-  .panel h2{font-size:1rem;margin:0 0 12px 0;color:var(--accent);}
-  .now-box{
-    background:linear-gradient(135deg,#1a2540,#111827);
-    border:1px solid #2f4a7a;
-    border-radius:12px;
-    padding:16px;
-    margin-bottom:16px;
-  }
-  .now-box .lvl{font-size:1.6rem;font-weight:700;}
-  .now-box .credits{color:var(--gold);font-weight:600;}
-  .need-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
-  .need-chip{
-    padding:6px 10px;border-radius:8px;font-size:.85rem;
-    border:1px solid var(--border);display:flex;align-items:center;gap:6px;
-  }
-  .need-chip.ok{border-color:var(--good);background:rgba(63,185,80,.12);}
-  .need-chip.missing{border-color:var(--bad);background:rgba(248,81,73,.12);}
-  .tier-tag{font-size:.7rem;font-weight:700;padding:1px 6px;border-radius:5px;color:#0d1117;}
-  .tier-0{background:#3a4150;color:var(--muted);}
-  .tier-1{background:var(--base);}
-  .tier-2{background:var(--gold);}
-  .tier-3{background:var(--diamond);}
-  .tier-4{background:var(--rainbow);}
-  .tier-5{background:var(--beskar);}
-  .tier-6{background:var(--galactic);}
-  .rarity-badge{
-    font-size:.65rem;font-weight:700;padding:1px 5px;border-radius:4px;
-    border:1px solid; letter-spacing:.3px;
-  }
-  .rarity-common{color:#c9d1d9;border-color:#4a5568;background:rgba(255,255,255,.04);}
-  .rarity-rare{color:#4fc3f7;border-color:#2f80a3;background:rgba(79,195,247,.08);}
-  .rarity-epic{color:#c084fc;border-color:#7e3fb0;background:rgba(192,132,252,.1);}
-  .rarity-legendary{color:#f2c14e;border-color:#a8791f;background:rgba(242,193,78,.1);}
-  .rarity-mythic{color:#ff6ec7;border-color:#b0397f;background:rgba(255,110,199,.1);}
-  .rarity-unknown{color:#6b7280;border-color:#3a4150;background:rgba(255,255,255,.02);}
-  .inv-search{
-    width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);
-    background:var(--panel2);color:var(--text);margin-bottom:10px;font-size:.85rem;
-  }
-  .inv-row{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:6px 4px;border-bottom:1px solid var(--border);gap:8px;
-  }
-  .inv-row:last-child{border-bottom:none;}
-  .inv-row label{font-size:.8rem;}
-  select{
-    background:var(--panel2);color:var(--text);border:1px solid var(--border);
-    border-radius:6px;padding:4px 6px;font-size:.78rem;
-  }
-  .progress-bar-wrap{background:var(--panel2);border-radius:8px;height:8px;overflow:hidden;margin:10px 0 4px 0;}
-  .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--good));}
-  .rebirth-list{display:flex;flex-direction:column;gap:8px;max-height:78vh;overflow-y:auto;padding-right:4px;}
-  .rebirth-card{
-    border:1px solid var(--border);border-radius:10px;padding:10px 12px;
-    background:var(--panel2);display:flex;justify-content:space-between;
-    align-items:center;gap:12px;flex-wrap:wrap;
-  }
-  .rebirth-card.done{opacity:.55;}
-  .rebirth-card.current{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:#132133;}
-  .rb-left{display:flex;align-items:center;gap:10px;min-width:70px;}
-  .rb-num{
-    font-weight:700;font-size:.85rem;min-width:52px;height:34px;border-radius:17px;
-    display:flex;align-items:center;justify-content:center;background:#232b3a;flex-shrink:0;padding:0 6px;
-  }
-  .rebirth-card.done .rb-num{background:var(--good);color:#0d1117;}
-  .rebirth-card.current .rb-num{background:var(--accent);color:#0d1117;}
-  .rb-credits{color:var(--gold);font-size:.8rem;font-weight:600;min-width:70px;}
-  .rb-droids{display:flex;gap:6px;flex-wrap:wrap;flex:1;}
-  .status-icon{font-size:.8rem;margin-left:2px;}
-  .reuse-star{color:var(--rainbow);font-weight:700;margin-left:2px;}
-  .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.75rem;color:var(--muted);margin-top:10px;}
-  .reset-btn{
-    background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;
-    padding:6px 10px;font-size:.75rem;cursor:pointer;margin-top:12px;
-  }
-  .reset-btn:hover{border-color:var(--bad);color:var(--bad);}
-  .save-note{font-size:.7rem;color:var(--muted);margin-top:8px;}
-  .footnote{font-size:.75rem;color:var(--muted);margin-top:16px;line-height:1.4;}
+:root{
+--bg:#0d1117;
+--panel:#161b22;
+--panel2:#1c2230;
+--border:#2a3140;
+--text:#e6edf3;
+--muted:#8b96a5;
+--accent:#4fc3f7;
+--gold:#f2c14e;
+--diamond:#7fdbff;
+--rainbow:#ff6ec7;
+--beskar:#c0c0c0;
+--galactic:#a78bfa;
+--base:#9fd88a;
+--good:#3fb950;
+--bad:#f85149;
+}
+*{box-sizing:border-box;}
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:radial-gradient(circle at top left,#111a2b,#0a0e14 60%);
+color:var(--text);
+padding:20px;
+}
+h1{font-size:1.4rem;margin:0 0 4px 0;letter-spacing:.5px;}
+.subtitle{color:var(--muted);font-size:.85rem;margin-bottom:14px;}
+.path-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.path-tab{
+padding:8px 18px;
+border-radius:8px;
+border:1px solid var(--border);
+background:var(--panel2);
+color:var(--muted);
+cursor:pointer;
+font-weight:600;
+font-size:.9rem;
+}
+.path-tab.active{
+background:linear-gradient(135deg,#1a2540,#111827);
+border-color:var(--accent);
+color:var(--accent);
+}
+.lang-tabs{display:flex;gap:8px;margin-bottom:14px;}
+.lang-tab{
+padding:6px 14px;border-radius:8px;border:1px solid var(--border);
+background:var(--panel2);color:var(--muted);cursor:pointer;font-weight:600;font-size:.8rem;
+}
+.lang-tab.active{border-color:var(--accent);color:var(--accent);}
+.path-note{font-size:.75rem;color:var(--muted);margin:-8px 0 14px 0;}
+.compact-toggle{
+background:var(--panel2);border:1px solid var(--border);color:var(--text);
+border-radius:8px;padding:8px 14px;font-size:.85rem;cursor:pointer;
+margin-bottom:14px;font-weight:600;
+}
+.compact-toggle.active{border-color:var(--accent);color:var(--accent);}
+body.compact .hide-in-compact{display:none;}
+body.compact .layout{grid-template-columns:1fr;}
+body.compact .now-box{
+position:sticky;top:12px;z-index:5;
+box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
+body.compact .lvl{font-size:2rem;}
+body.compact .need-chip{font-size:1rem;padding:8px 12px;}
+body.compact .tier-tag{font-size:.85rem;padding:2px 8px;}
+body.compact h1{font-size:1.1rem;}
+body.compact .subtitle, body.compact .footnote{display:none;}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start;}
+@media (max-width:900px){.layout{grid-template-columns:1fr;}}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.panel h2{font-size:1rem;margin:0 0 12px 0;color:var(--accent);}
+.now-box{
+background:linear-gradient(135deg,#1a2540,#111827);
+border:1px solid #2f4a7a;
+border-radius:12px;
+padding:16px;
+margin-bottom:16px;
+}
+.now-box .lvl{font-size:1.6rem;font-weight:700;}
+.now-box .credits{color:var(--gold);font-weight:600;}
+.need-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.need-chip{
+padding:6px 10px;border-radius:8px;font-size:.85rem;
+border:1px solid var(--border);display:flex;align-items:center;gap:6px;
+}
+.need-chip.ok{border-color:var(--good);background:rgba(63,185,80,.12);}
+.need-chip.missing{border-color:var(--bad);background:rgba(248,81,73,.12);}
+.tier-tag{font-size:.7rem;font-weight:700;padding:1px 6px;border-radius:5px;color:#0d1117;}
+.tier-0{background:#3a4150;color:var(--muted);}
+.tier-1{background:var(--base);}
+.tier-2{background:var(--gold);}
+.tier-3{background:var(--diamond);}
+.tier-4{background:var(--rainbow);}
+.tier-5{background:var(--beskar);}
+.tier-6{background:var(--galactic);}
+.rarity-badge{
+font-size:.65rem;font-weight:700;padding:1px 5px;border-radius:4px;
+border:1px solid; letter-spacing:.3px;
+}
+.rarity-common{color:#c9d1d9;border-color:#4a5568;background:rgba(255,255,255,.04);}
+.rarity-rare{color:#4fc3f7;border-color:#2f80a3;background:rgba(79,195,247,.08);}
+.rarity-epic{color:#c084fc;border-color:#7e3fb0;background:rgba(192,132,252,.1);}
+.rarity-legendary{color:#f2c14e;border-color:#a8791f;background:rgba(242,193,78,.1);}
+.rarity-mythic{color:#ff6ec7;border-color:#b0397f;background:rgba(255,110,199,.1);}
+.rarity-unknown{color:#6b7280;border-color:#3a4150;background:rgba(255,255,255,.02);}
+.inv-search{
+width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);
+background:var(--panel2);color:var(--text);margin-bottom:10px;font-size:.85rem;
+}
+.inv-row{
+display:flex;justify-content:space-between;align-items:center;
+padding:6px 4px;border-bottom:1px solid var(--border);gap:8px;
+}
+.inv-row:last-child{border-bottom:none;}
+.inv-row label{font-size:.8rem;}
+select{
+background:var(--panel2);color:var(--text);border:1px solid var(--border);
+border-radius:6px;padding:4px 6px;font-size:.78rem;
+}
+.progress-bar-wrap{background:var(--panel2);border-radius:8px;height:8px;overflow:hidden;margin:10px 0 4px 0;}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--good));}
+.rebirth-list{display:flex;flex-direction:column;gap:8px;max-height:78vh;overflow-y:auto;padding-right:4px;}
+.rebirth-card{
+border:1px solid var(--border);border-radius:10px;padding:10px 12px;
+background:var(--panel2);display:flex;justify-content:space-between;
+align-items:center;gap:12px;flex-wrap:wrap;
+}
+.rebirth-card.done{opacity:.55;}
+.rebirth-card.current{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:#132133;}
+.rb-left{display:flex;align-items:center;gap:10px;min-width:70px;}
+.rb-num{
+font-weight:700;font-size:.85rem;min-width:52px;height:34px;border-radius:17px;
+display:flex;align-items:center;justify-content:center;background:#232b3a;flex-shrink:0;padding:0 6px;
+}
+.rebirth-card.done .rb-num{background:var(--good);color:#0d1117;}
+.rebirth-card.current .rb-num{background:var(--accent);color:#0d1117;}
+.rb-credits{color:var(--gold);font-size:.8rem;font-weight:600;min-width:70px;}
+.rb-droids{display:flex;gap:6px;flex-wrap:wrap;flex:1;}
+.status-icon{font-size:.8rem;margin-left:2px;}
+.reuse-star{color:var(--rainbow);font-weight:700;margin-left:2px;}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.75rem;color:var(--muted);margin-top:10px;}
+.reset-btn{
+background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;
+padding:6px 10px;font-size:.75rem;cursor:pointer;margin-top:12px;
+}
+.reset-btn:hover{border-color:var(--bad);color:var(--bad);}
+.save-note{font-size:.7rem;color:var(--muted);margin-top:8px;}
+.footnote{font-size:.75rem;color:var(--muted);margin-top:16px;line-height:1.4;}
 </style>
 </head>
 <body>
 
-<h1>🤖 Star Wars Droid Tycoon — Rebirth Tracker</h1>
-<div class="subtitle">Fortnite • Path 3 &amp; Path 4 (μετά από Super Rebirth) — δείχνει τι droid/tier χρειάζεσαι σε κάθε rebirth.</div>
+<h1 id="txtTitle">🤖 Star Wars Droid Tycoon — Rebirth Tracker</h1>
+<div class="subtitle" id="txtSubtitle"></div>
+
+<div class="lang-tabs">
+<button class="lang-tab active" id="langEl">Ελληνικά</button>
+<button class="lang-tab" id="langEn">English</button>
+</div>
 
 <div class="path-tabs">
-  <button class="path-tab" id="tabPath1">Path 1</button>
-  <button class="path-tab" id="tabPath2">Path 2</button>
-  <button class="path-tab active" id="tabPath3">Path 3</button>
-  <button class="path-tab" id="tabPath4">Path 4</button>
+<button class="path-tab" id="tabPath1">Path 1</button>
+<button class="path-tab" id="tabPath2">Path 2</button>
+<button class="path-tab active" id="tabPath3">Path 3</button>
+<button class="path-tab" id="tabPath4">Path 4</button>
 </div>
-<div class="path-note">Κύκλος: Path 1 → 2 → 3 → 4 → πίσω στο Path 1 μετά από κάθε Super Rebirth.</div>
-<button class="compact-toggle" id="compactToggle">🖥️ Compact mode (για δεύτερη οθόνη)</button>
-<button class="reset-btn" id="superRebirthBtn" style="border-color:var(--rainbow);color:var(--rainbow);font-weight:700;padding:10px 16px;margin-bottom:16px;">🔄 Έκανα Super Rebirth (μηδενισμός droids + επόμενο path)</button>
+<div class="path-note" id="txtPathNote"></div>
+<button class="compact-toggle" id="compactToggle"></button>
+<button class="reset-btn" id="superRebirthBtn" style="border-color:var(--rainbow);color:var(--rainbow);font-weight:700;padding:10px 16px;margin-bottom:16px;"></button>
+<button class="reset-btn" id="feedbackBtn" style="border-color:var(--accent);color:var(--accent);margin-left:8px;padding:10px 16px;margin-bottom:16px;"></button>
+
+<div id="feedbackModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:60;">
+<div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px;width:340px;max-width:90vw;">
+<h3 id="txtFeedbackTitle" style="margin:0 0 10px 0;font-size:.95rem;color:var(--accent);"></h3>
+<textarea id="feedbackText" rows="5" style="width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.85rem;font-family:inherit;resize:vertical;"></textarea>
+<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;">
+<button id="feedbackCancelBtn" class="reset-btn" style="margin:0;"></button>
+<button id="feedbackCopyBtn" class="reset-btn" style="margin:0;"></button>
+<button id="feedbackSendBtn" class="reset-btn" style="margin:0;border-color:var(--accent);color:var(--accent);"></button>
+</div>
+<div id="feedbackNote" class="save-note" style="margin-top:8px;"></div>
+</div>
+</div>
 
 <div class="layout">
 
-  <div class="hide-in-compact">
-    <div class="panel">
-      <h2>📦 Το απόθεμά σου</h2>
-      <input type="text" class="inv-search" id="search" placeholder="Αναζήτηση droid...">
-      <div id="inventoryList"></div>
-      <button class="reset-btn" id="resetBtn">Καθαρισμός όλων</button>
-      <div class="save-note" id="saveNote">Αποθηκεύεται αυτόματα.</div>
-    </div>
-  </div>
+<div class="hide-in-compact">
+<div class="panel">
+<h2 id="txtInventoryTitle"></h2>
+<input type="text" class="inv-search" id="search">
+<div id="inventoryList"></div>
+<button class="reset-btn" id="resetBtn"></button>
+<div class="save-note" id="saveNote"></div>
+</div>
+</div>
 
-  <div>
-    <div class="now-box">
-      <div class="subtitle" style="margin-bottom:6px;">🎯 Επόμενος στόχος (<span id="pathLabel">Path 3</span>)</div>
-      <div class="lvl" id="currentLevel">—</div>
-      <div class="credits" id="currentCredits">—</div>
-      <div class="need-list" id="currentNeeds"></div>
-      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
-      <div class="save-note" id="progressText"></div>
-    </div>
+<div>
+<div class="now-box">
+<div class="subtitle" style="margin-bottom:6px;"><span id="txtNextGoal"></span> (<span id="pathLabel">Path 3</span>)</div>
+<div class="lvl" id="currentLevel">—</div>
+<div class="credits" id="currentCredits">—</div>
+<div class="need-list" id="currentNeeds"></div>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="save-note" id="progressText"></div>
+</div>
 
-    <div class="panel" id="sellPanel">
-      <h2>🗑️ Ασφαλές να πουλήσεις</h2>
-      <div class="save-note" style="margin-top:0;margin-bottom:8px;">Droids που δεν χρειάζεσαι πια σε κανένα από τα υπόλοιπα (μη τσεκαρισμένα) rebirths του Path <span id="sellPathLabel">3</span>.</div>
-      <div id="sellList" class="need-list"></div>
-    </div>
+<div class="panel" id="sellPanel">
+<h2 id="txtSellTitle"></h2>
+<div class="save-note" style="margin-top:0;margin-bottom:8px;" id="txtSellDesc"></div>
+<div id="sellList" class="need-list"></div>
+</div>
 
-    <div class="panel">
-      <h2>📋 Όλα τα Rebirths (1–30)</h2>
-      <div class="legend">
-        <span>☑️ Τσέκαρε ό,τι έχεις ήδη κάνει</span>
-        <span>🟢 Ολοκληρωμένο</span>
-        <span>🔵 Επόμενος στόχος</span>
-        <span>✅/❌ = αν έχεις τώρα το tier του droid στη βάση σου</span>
-        <span style="color:var(--rainbow);">★ = ξαναχρειάζεται σε επόμενο rebirth — μην το πουλήσεις</span>
-      </div>
-      <div class="rebirth-list" id="rebirthList" style="margin-top:10px;"></div>
-    </div>
-  </div>
+<div class="panel">
+<h2 id="txtRebirthsTitle"></h2>
+<div class="legend">
+<span id="txtLegendCheck"></span>
+<span id="txtLegendDone"></span>
+<span id="txtLegendNext"></span>
+<span id="txtLegendTier"></span>
+<span style="color:var(--rainbow);" id="txtLegendReuse"></span>
+</div>
+<div class="rebirth-list" id="rebirthList" style="margin-top:10px;"></div>
+</div>
+</div>
 
 </div>
 
-<div class="footnote">
-  Δεδομένα Path 1–4 (Rebirth 1–30 σε κάθε path) όπως τα έστειλες από το wiki. Το ★ δείχνει droids που σημειώνονται με * στην πηγή (χρειάζονται ξανά σε επόμενο rebirth level στο ίδιο path) — καλό είναι να μην τα πουλήσεις πρόωρα.<br>
-  Το χρωματιστό label δίπλα σε κάθε droid (Common/Rare/Epic/Legendary/Mythic) δείχνει τη rarity του, από τον επίσημο πίνακα Droidex.<br>
-  Επειδή η βάση σου έχει όριο στο πόσα droids μπορείς να έχεις ταυτόχρονα, η πρόοδος/επόμενος στόχος υπολογίζεται πλέον από το checkbox που τσεκάρεις εσύ σε κάθε rebirth ("το έχω κάνει"), όχι αυτόματα από το inventory. Το inventory panel και τα ✅/❌ δίπλα σε κάθε droid μένουν σαν βοήθημα — δείχνουν αν το tier που έχεις καταχωρήσει καλύπτει τη συγκεκριμένη απαίτηση, χρήσιμο για να βλέπεις τι να φτιάξεις/αναβαθμίσεις πριν κάνεις το επόμενο rebirth.<br>
-  Αν αλλάξει κάτι σε update του παιχνιδιού, στείλε μου τον ενημερωμένο πίνακα με τον ίδιο τρόπο και το διορθώνω.
-</div>
+<div class="footnote" id="txtFootnote"></div>
 
 <script>
-const TIERS = ["Καμία","Base","Gold","Diamond","Rainbow","Beskar","Galactic"];
+let lang = 'el';
+
+const TRANSLATIONS = {
+el: {
+title: "🤖 Star Wars Droid Tycoon — Rebirth Tracker",
+subtitle: "Fortnite • Path 1–4 (πριν και μετά από Super Rebirth) — δείχνει τι droid/tier χρειάζεσαι σε κάθε rebirth.",
+pathNote: "Κύκλος: Path 1 → 2 → 3 → 4 → πίσω στο Path 1 μετά από κάθε Super Rebirth.",
+compactToggle: "🖥️ Compact mode (για δεύτερη οθόνη)",
+superRebirthBtn: "🔄 Έκανα Super Rebirth (μηδενισμός droids + επόμενο path)",
+inventoryTitle: "📦 Το απόθεμά σου",
+searchPlaceholder: "Αναζήτηση droid...",
+resetBtn: "Καθαρισμός όλων",
+saveNoteDefault: "Αποθηκεύεται αυτόματα.",
+saveNoteSaving: "Αποθήκευση...",
+saveNoteSaved: "Αποθηκεύτηκε ✓ (τοπικά σε αυτόν τον browser)",
+saveNoteError: "Σφάλμα αποθήκευσης (θα ξαναδοκιμάσει)",
+nextGoal: "🎯 Επόμενος στόχος",
+sellTitle: "🗑️ Ασφαλές να πουλήσεις",
+sellDesc: (p) => `Droids που δεν χρειάζεσαι πια σε κανένα από τα υπόλοιπα (μη τσεκαρισμένα) rebirths του Path ${p}.`,
+sellEmptyInv: "Δεν έχεις καταχωρήσει ακόμα droids στο απόθεμά σου.",
+sellNothing: "Όλα τα droids που έχεις καταχωρήσει χρειάζονται ακόμα σε κάποιο επόμενο rebirth — μην πουλήσεις τίποτα προς το παρόν.",
+rebirthsTitle: "📋 Όλα τα Rebirths (1–30)",
+legendCheck: "☑️ Τσέκαρε ό,τι έχεις ήδη κάνει",
+legendDone: "🟢 Ολοκληρωμένο",
+legendNext: "🔵 Επόμενος στόχος",
+legendTier: "✅/❌ = αν έχεις τώρα το tier του droid στη βάση σου",
+legendReuse: "★ = ξαναχρειάζεται σε επόμενο rebirth — μην το πουλήσεις",
+footnote: `Δεδομένα Path 1–4 (Rebirth 1–30 σε κάθε path). Το ★ δείχνει droids που χρειάζονται ξανά σε επόμενο rebirth level στο ίδιο path — καλό είναι να μην τα πουλήσεις πρόωρα.<br>Το χρωματιστό label δίπλα σε κάθε droid (Common/Rare/Epic/Legendary/Mythic) δείχνει τη rarity του, από τον επίσημο πίνακα Droidex.<br>Επειδή η βάση σου έχει όριο στο πόσα droids μπορείς να έχεις ταυτόχρονα, η πρόοδος/επόμενος στόχος υπολογίζεται από το checkbox που τσεκάρεις εσύ σε κάθε rebirth ("το έχω κάνει"), όχι αυτόματα από το inventory. Το inventory panel και τα ✅/❌ δίπλα σε κάθε droid μένουν σαν βοήθημα.`,
+allDone: "Όλα ολοκληρωμένα! 🎉",
+allDoneDesc: (total, p) => `Έχεις σημειώσει όλα τα rebirths ως και το ${total} του Path ${p}.`,
+needCredits: (c) => `Χρειάζεσαι: ${c} credits`,
+progressText: (done, total, p) => `${done} / ${total} rebirths σημειωμένα ως ολοκληρωμένα (Path ${p})`,
+confirmSuperRebirth: "Σίγουρα έκανες Super Rebirth; Θα μηδενιστούν ΟΛΑ τα droids στο inventory σου και θα προχωρήσεις στο επόμενο path.",
+checkboxTitle: "Το έχω κάνει ήδη",
+feedbackBtn: "💡 Πρότεινε κάτι",
+feedbackTitle: "Πρόταση / feedback για τη σελίδα",
+feedbackPlaceholder: "Γράψε την ιδέα ή το πρόβλημα που βρήκες...",
+feedbackCancel: "Άκυρο",
+feedbackCopy: "Αντιγραφή κειμένου",
+feedbackSend: "Άνοιγμα σε GitHub Issue",
+feedbackCopied: "Αντιγράφηκε ✓ — μπορείς να το επικολλήσεις όπου θες.",
+feedbackEmpty: "Γράψε κάτι πρώτα.",
+feedbackIssueTitle: "Πρόταση από χρήστη",
+},
+en: {
+title: "🤖 Star Wars Droid Tycoon — Rebirth Tracker",
+subtitle: "Fortnite • Path 1–4 (before and after Super Rebirth) — shows which droid/tier you need for each rebirth.",
+pathNote: "Cycle: Path 1 → 2 → 3 → 4 → back to Path 1 after each Super Rebirth.",
+compactToggle: "🖥️ Compact mode (for a second screen)",
+superRebirthBtn: "🔄 I did a Super Rebirth (reset droids + next path)",
+inventoryTitle: "📦 Your inventory",
+searchPlaceholder: "Search droid...",
+resetBtn: "Clear all",
+saveNoteDefault: "Auto-saves as you go.",
+saveNoteSaving: "Saving...",
+saveNoteSaved: "Saved ✓ (locally in this browser)",
+saveNoteError: "Save failed (will retry)",
+nextGoal: "🎯 Next target",
+sellTitle: "🗑️ Safe to sell",
+sellDesc: (p) => `Droids you no longer need for any remaining (unchecked) rebirths in Path ${p}.`,
+sellEmptyInv: "You haven't added any droids to your inventory yet.",
+sellNothing: "Every droid you've logged is still needed for an upcoming rebirth — don't sell anything yet.",
+rebirthsTitle: "📋 All Rebirths (1–30)",
+legendCheck: "☑️ Check off what you've already done",
+legendDone: "🟢 Completed",
+legendNext: "🔵 Next target",
+legendTier: "✅/❌ = whether you currently have that droid's tier on your base",
+legendReuse: "★ = needed again in a later rebirth — don't sell it",
+footnote: `Path 1–4 data (Rebirth 1–30 in each path). ★ marks droids needed again at a later rebirth level in the same path — don't sell those early.<br>The colored label next to each droid (Common/Rare/Epic/Legendary/Mythic) shows its rarity, from the official Droidex table.<br>Because your base has a limit on how many droids you can hold at once, progress/next target is driven by the checkbox you tick on each rebirth ("done it"), not automatically from your inventory. The inventory panel and the ✅/❌ next to each droid are just a helper.`,
+allDone: "All done! 🎉",
+allDoneDesc: (total, p) => `You've marked all rebirths up to ${total} in Path ${p} as done.`,
+needCredits: (c) => `You need: ${c} credits`,
+progressText: (done, total, p) => `${done} / ${total} rebirths marked complete (Path ${p})`,
+confirmSuperRebirth: "Sure you did a Super Rebirth? This will reset ALL droids in your inventory and move you to the next path.",
+checkboxTitle: "I've already done this",
+feedbackBtn: "💡 Suggest something",
+feedbackTitle: "Suggestion / feedback for the page",
+feedbackPlaceholder: "Write the idea or issue you found...",
+feedbackCancel: "Cancel",
+feedbackCopy: "Copy text",
+feedbackSend: "Open as GitHub Issue",
+feedbackCopied: "Copied ✓ — paste it wherever you like.",
+feedbackEmpty: "Write something first.",
+feedbackIssueTitle: "User suggestion",
+}
+};
+function t(key){ return TRANSLATIONS[lang][key]; }
+
+const TIER_LABELS = {
+el: ["Καμία","Base","Gold","Diamond","Rainbow","Beskar","Galactic"],
+en: ["None","Base","Gold","Diamond","Rainbow","Beskar","Galactic"]
+};
+let TIERS = TIER_LABELS[lang];
 const TIER_CLASS = ["tier-0","tier-1","tier-2","tier-3","tier-4","tier-5","tier-6"];
 
-// Rarity confirmed from the official Droidex table (Common/Rare/Epic/Legendary/Mythic).
+// Rarity confirmed from the official Droidex table (canonical English values).
 const RARITY = {
-  "CB":"Common","Pit":"Common","Gonk":"Common","Mouse":"Common","R3":"Common","R5":"Common","R8":"Common",
-  "DRK-1 Probe":"Common","B1 Battle":"Common","ID10":"Common","Imperial Probe":"Common",
-  "BDX Explorer":"Rare","ARG":"Rare","Senate Hovercam":"Rare","BU-4D":"Rare","Bal-Core":"Rare","Roll-R":"Rare",
-  "2BB":"Rare","A-LT":"Rare","R4":"Rare","R9":"Rare","B1 Security":"Rare","NAV-EX":"Rare","Vect-Arm":"Rare","HOV-R":"Rare",
-  "Groundmech":"Epic","LO":"Epic","AMP Walker":"Epic","Sen-Tri":"Epic","Opti-Pod":"Epic","Gunrunner":"Epic","BB":"Epic",
-  "R2":"Epic","R6":"Epic","Trak-R":"Epic","Orb-Walker":"Epic","Util-Tech":"Epic","B1 Heavy":"Epic","B2 Super":"Epic",
-  "B2 Heavy":"Epic","Strike-Orb":"Epic","Haul-R":"Epic","LNG-Shot":"Epic",
-  "Proto-Roller":"Legendary","Mecha-Droid":"Legendary","Mono-Walker":"Legendary","BB9":"Legendary","R7":"Legendary",
-  "B2-RP":"Legendary","Cyclo-Grav":"Legendary","Opti-Strike":"Legendary",
-  "Snow Mouse":"Mythic","RIC":"Mythic","Loadlifter":"Mythic","LEP":"Mythic","RIC-1200":"Mythic","DRFT-R":"Mythic",
-  "Cyclens":"Mythic","MO-Trak":"Mythic","Tri-Tek":"Mythic","IG":"Mythic","KX":"Mythic",
+"CB":"Common","Pit":"Common","Gonk":"Common","Mouse":"Common","R3":"Common","R5":"Common","R8":"Common",
+"DRK-1 Probe":"Common","B1 Battle":"Common","ID10":"Common","Imperial Probe":"Common",
+"BDX Explorer":"Rare","ARG":"Rare","Senate Hovercam":"Rare","BU-4D":"Rare","Bal-Core":"Rare","Roll-R":"Rare",
+"2BB":"Rare","A-LT":"Rare","R4":"Rare","R9":"Rare","B1 Security":"Rare","NAV-EX":"Rare","Vect-Arm":"Rare","HOV-R":"Rare",
+"Groundmech":"Epic","LO":"Epic","AMP Walker":"Epic","Sen-Tri":"Epic","Opti-Pod":"Epic","Gunrunner":"Epic","BB":"Epic",
+"R2":"Epic","R6":"Epic","Trak-R":"Epic","Orb-Walker":"Epic","Util-Tech":"Epic","B1 Heavy":"Epic","B2 Super":"Epic",
+"B2 Heavy":"Epic","Strike-Orb":"Epic","Haul-R":"Epic","LNG-Shot":"Epic",
+"Proto-Roller":"Legendary","Mecha-Droid":"Legendary","Mono-Walker":"Legendary","BB9":"Legendary","R7":"Legendary",
+"B2-RP":"Legendary","Cyclo-Grav":"Legendary","Opti-Strike":"Legendary",
+"Snow Mouse":"Mythic","RIC":"Mythic","Loadlifter":"Mythic","LEP":"Mythic","RIC-1200":"Mythic","DRFT-R":"Mythic",
+"Cyclens":"Mythic","MO-Trak":"Mythic","Tri-Tek":"Mythic","IG":"Mythic","KX":"Mythic",
+};
+const RARITY_LABELS = {
+el: {Common:"Κοινό", Rare:"Σπάνιο", Epic:"Επικό", Legendary:"Θρυλικό", Mythic:"Μυθικό", Unknown:"Άγνωστο"},
+en: {Common:"Common", Rare:"Rare", Epic:"Epic", Legendary:"Legendary", Mythic:"Mythic", Unknown:"Unknown"}
 };
 const RARITY_CLASS = {
-  "Common":"rarity-common","Rare":"rarity-rare","Epic":"rarity-epic",
-  "Legendary":"rarity-legendary","Mythic":"rarity-mythic","Άγνωστο":"rarity-unknown"
+"Common":"rarity-common","Rare":"rarity-rare","Epic":"rarity-epic",
+"Legendary":"rarity-legendary","Mythic":"rarity-mythic","Unknown":"rarity-unknown"
 };
-function rarityOf(name){ return RARITY[name] || "Άγνωστο"; }
+function rarityOf(name){ return RARITY[name] || "Unknown"; }
 function rarityBadge(name){
-  const r = rarityOf(name);
-  return `<span class="rarity-badge ${RARITY_CLASS[r]}">${r}</span>`;
+const r = rarityOf(name);
+const label = RARITY_LABELS[lang][r] || r;
+return `<span class="rarity-badge ${RARITY_CLASS[r]}">${label}</span>`;
 }
 
 function d(name, tier, reused){ return [name, tier, !!reused]; }
 
 const PATH1 = [
-  {level:1, credits:"10K", droids:[d("CB",1),d("Pit",1),d("DRK-1 Probe",1)]},
-  {level:2, credits:"150K", droids:[d("BDX Explorer",1),d("2BB",1),d("Bal-Core",1)]},
-  {level:3, credits:"975K", droids:[d("A-LT",1,1),d("BU-4D",1,1),d("R9",2,1)]},
-  {level:4, credits:"2.95M", droids:[d("ARG",2,1),d("B1 Security",2,1),d("Groundmech",1,1)]},
-  {level:5, credits:"5.35M", droids:[d("BU-4D",2,1),d("HOV-R",2,1),d("R9",3)]},
-  {level:6, credits:"9.85M", droids:[d("A-LT",3),d("ARG",3),d("Groundmech",2,1)]},
-  {level:7, credits:"14.5M", droids:[d("BU-4D",3),d("B1 Security",3),d("BB",2,1)]},
-  {level:8, credits:"36M", droids:[d("HOV-R",3),d("LO",2,1),d("Util-Tech",2)]},
-  {level:9, credits:"89M", droids:[d("Trak-R",2),d("R6",2),d("Groundmech",4,1)]},
-  {level:10, credits:"220M", droids:[d("Strike-Orb",2),d("Haul-R",4),d("LO",4)]},
-  {level:11, credits:"550M", droids:[d("AMP Walker",4,1),d("B1 Heavy",4,1),d("BB9",1,1)]},
-  {level:12, credits:"1.36B", droids:[d("Proto-Roller",2,1),d("Mecha-Droid",1,1),d("Mono-Walker",1,1)]},
-  {level:13, credits:"3.40B", droids:[d("R7",1,1),d("Cyclo-Grav",1,1),d("B2-RP",1,1)]},
-  {level:14, credits:"8.45B", droids:[d("Opti-Strike",1,1),d("Mono-Walker",2,1),d("Mecha-Droid",2,1)]},
-  {level:15, credits:"21.00B", droids:[d("B2-RP",2,1),d("BB9",2,1),d("R7",2,1)]},
-  {level:16, credits:"52.00B", droids:[d("Opti-Strike",2,1),d("Mono-Walker",3,1),d("Proto-Roller",3,1)]},
-  {level:17, credits:"130.00B", droids:[d("B2-RP",3,1),d("Cyclo-Grav",3,1),d("Mecha-Droid",3,1)]},
-  {level:18, credits:"325.00B", droids:[d("BB9",3,1),d("R7",3,1),d("Mono-Walker",4,1)]},
-  {level:19, credits:"810.00B", droids:[d("B2-RP",4,1),d("Cyclo-Grav",4,1),d("Proto-Roller",4,1)]},
-  {level:20, credits:"2.00T", droids:[d("R7",4,1),d("Opti-Strike",4,1),d("Mecha-Droid",4,1)]},
-  {level:21, credits:"3.00T", droids:[d("BB",5),d("Orb-Walker",5),d("Groundmech",5)]},
-  {level:22, credits:"4.50T", droids:[d("AMP Walker",5),d("B1 Heavy",5),d("Proto-Roller",5,1)]},
-  {level:23, credits:"6.00T", droids:[d("Opti-Strike",5),d("Mono-Walker",5,1),d("R7",5)]},
-  {level:24, credits:"9.00T", droids:[d("BB9",5),d("Cyclo-Grav",5),d("MO-Trak",1,1)]},
-  {level:25, credits:"13.50T", droids:[d("B2-RP",5,1),d("IG",1,1),d("DRFT-R",2,1)]},
-  {level:26, credits:"21.00T", droids:[d("Cyclens",2,1),d("Loadlifter",3,1),d("RIC-1200",4)]},
-  {level:27, credits:"32.00T", droids:[d("KX",3),d("Tri-Tek",4),d("Snow Mouse",5)]},
-  {level:28, credits:"45.00T", droids:[d("Proto-Roller",6),d("MO-Trak",4),d("DRFT-R",5)]},
-  {level:29, credits:"68.00T", droids:[d("Mono-Walker",6),d("Mecha-Droid",6),d("IG",5)]},
-  {level:30, credits:"100.00T", droids:[d("B2-RP",6),d("Cyclens",5),d("Loadlifter",6)]},
+{level:1, credits:"10K", droids:[d("CB",1),d("Pit",1),d("DRK-1 Probe",1)]},
+{level:2, credits:"150K", droids:[d("BDX Explorer",1),d("2BB",1),d("Bal-Core",1)]},
+{level:3, credits:"975K", droids:[d("A-LT",1,1),d("BU-4D",1,1),d("R9",2,1)]},
+{level:4, credits:"2.95M", droids:[d("ARG",2,1),d("B1 Security",2,1),d("Groundmech",1,1)]},
+{level:5, credits:"5.35M", droids:[d("BU-4D",2,1),d("HOV-R",2,1),d("R9",3)]},
+{level:6, credits:"9.85M", droids:[d("A-LT",3),d("ARG",3),d("Groundmech",2,1)]},
+{level:7, credits:"14.5M", droids:[d("BU-4D",3),d("B1 Security",3),d("BB",2,1)]},
+{level:8, credits:"36M", droids:[d("HOV-R",3),d("LO",2,1),d("Util-Tech",2)]},
+{level:9, credits:"89M", droids:[d("Trak-R",2),d("R6",2),d("Groundmech",4,1)]},
+{level:10, credits:"220M", droids:[d("Strike-Orb",2),d("Haul-R",4),d("LO",4)]},
+{level:11, credits:"550M", droids:[d("AMP Walker",4,1),d("B1 Heavy",4,1),d("BB9",1,1)]},
+{level:12, credits:"1.36B", droids:[d("Proto-Roller",2,1),d("Mecha-Droid",1,1),d("Mono-Walker",1,1)]},
+{level:13, credits:"3.40B", droids:[d("R7",1,1),d("Cyclo-Grav",1,1),d("B2-RP",1,1)]},
+{level:14, credits:"8.45B", droids:[d("Opti-Strike",1,1),d("Mono-Walker",2,1),d("Mecha-Droid",2,1)]},
+{level:15, credits:"21.00B", droids:[d("B2-RP",2,1),d("BB9",2,1),d("R7",2,1)]},
+{level:16, credits:"52.00B", droids:[d("Opti-Strike",2,1),d("Mono-Walker",3,1),d("Proto-Roller",3,1)]},
+{level:17, credits:"130.00B", droids:[d("B2-RP",3,1),d("Cyclo-Grav",3,1),d("Mecha-Droid",3,1)]},
+{level:18, credits:"325.00B", droids:[d("BB9",3,1),d("R7",3,1),d("Mono-Walker",4,1)]},
+{level:19, credits:"810.00B", droids:[d("B2-RP",4,1),d("Cyclo-Grav",4,1),d("Proto-Roller",4,1)]},
+{level:20, credits:"2.00T", droids:[d("R7",4,1),d("Opti-Strike",4,1),d("Mecha-Droid",4,1)]},
+{level:21, credits:"3.00T", droids:[d("BB",5),d("Orb-Walker",5),d("Groundmech",5)]},
+{level:22, credits:"4.50T", droids:[d("AMP Walker",5),d("B1 Heavy",5),d("Proto-Roller",5,1)]},
+{level:23, credits:"6.00T", droids:[d("Opti-Strike",5),d("Mono-Walker",5,1),d("R7",5)]},
+{level:24, credits:"9.00T", droids:[d("BB9",5),d("Cyclo-Grav",5),d("MO-Trak",1,1)]},
+{level:25, credits:"13.50T", droids:[d("B2-RP",5,1),d("IG",1,1),d("DRFT-R",2,1)]},
+{level:26, credits:"21.00T", droids:[d("Cyclens",2,1),d("Loadlifter",3,1),d("RIC-1200",4)]},
+{level:27, credits:"32.00T", droids:[d("KX",3),d("Tri-Tek",4),d("Snow Mouse",5)]},
+{level:28, credits:"45.00T", droids:[d("Proto-Roller",6),d("MO-Trak",4),d("DRFT-R",5)]},
+{level:29, credits:"68.00T", droids:[d("Mono-Walker",6),d("Mecha-Droid",6),d("IG",5)]},
+{level:30, credits:"100.00T", droids:[d("B2-RP",6),d("Cyclens",5),d("Loadlifter",6)]},
 ];
 
 const PATH2 = [
-  {level:1, credits:"10K", droids:[d("ID10",1),d("Mouse",1),d("Gonk",1)]},
-  {level:2, credits:"150K", droids:[d("Roll-R",1,1),d("Senate Hovercam",1),d("NAV-EX",1,1)]},
-  {level:3, credits:"975K", droids:[d("R4",1,1),d("Vect-Arm",1,1),d("BDX Explorer",2,1)]},
-  {level:4, credits:"2.95M", droids:[d("2BB",2,1),d("Bal-Core",2,1),d("Orb-Walker",1,1)]},
-  {level:5, credits:"5.35M", droids:[d("R4",2,1),d("Vect-Arm",2,1),d("NAV-EX",2,1)]},
-  {level:6, credits:"9.85M", droids:[d("Gunrunner",1,1),d("2BB",3),d("Bal-Core",3,1)]},
-  {level:7, credits:"14.5M", droids:[d("Roll-R",3),d("BDX Explorer",3),d("R2",2,1)]},
-  {level:8, credits:"36M", droids:[d("R4",3),d("B2 Super",2,1),d("Gunrunner",2)]},
-  {level:9, credits:"89M", droids:[d("NAV-EX",4),d("Strike-Orb",2,1),d("AMP Walker",2,1)]},
-  {level:10, credits:"220M", droids:[d("Vect-Arm",4),d("R2",3,1),d("B2 Super",3,1)]},
-  {level:11, credits:"550M", droids:[d("Bal-Core",4),d("Strike-Orb",3,1),d("B2 Heavy",3,1)]},
-  {level:12, credits:"1.36B", droids:[d("Orb-Walker",4),d("R2",4),d("BB9",1,1)]},
-  {level:13, credits:"3.40B", droids:[d("B2 Super",4),d("Mecha-Droid",1,1),d("Proto-Roller",1,1)]},
-  {level:14, credits:"8.45B", droids:[d("B2 Heavy",4),d("B2-RP",1,1),d("R7",2,1)]},
-  {level:15, credits:"21.00B", droids:[d("Strike-Orb",4,1),d("BB9",2,1),d("Proto-Roller",2,1)]},
-  {level:16, credits:"52.00B", droids:[d("AMP Walker",4),d("Mecha-Droid",2,1),d("B2-RP",3,1)]},
-  {level:17, credits:"130.00B", droids:[d("Opti-Pod",4),d("Mono-Walker",2,1),d("B2-RP",3,1)]},
-  {level:18, credits:"325.00B", droids:[d("Util-Tech",4),d("BB9",3,1),d("Proto-Roller",3,1)]},
-  {level:19, credits:"810.00B", droids:[d("Mecha-Droid",3,1),d("R7",4,1),d("B2-RP",4,1)]},
-  {level:20, credits:"2.00T", droids:[d("Mono-Walker",4,1),d("Opti-Strike",4,1),d("Cyclo-Grav",4,1)]},
-  {level:21, credits:"3.00T", droids:[d("LO",5),d("R6",5),d("Haul-R",5)]},
-  {level:22, credits:"4.50T", droids:[d("Sen-Tri",5),d("Strike-Orb",5),d("Proto-Roller",5)]},
-  {level:23, credits:"6.00T", droids:[d("BB9",5),d("Cyclo-Grav",5,1),d("B2-RP",5,1)]},
-  {level:24, credits:"9.00T", droids:[d("Opti-Strike",5,1),d("B2-RP",5),d("Snow Mouse",1,1)]},
-  {level:25, credits:"13.50T", droids:[d("Mono-Walker",5),d("Tri-Tek",2,1),d("RIC-1200",1,1)]},
-  {level:26, credits:"21.00T", droids:[d("KX",2,1),d("DRFT-R",3),d("IG",4)]},
-  {level:27, credits:"32.00T", droids:[d("LEP",3),d("Loadlifter",4),d("MO-Trak",5)]},
-  {level:28, credits:"45.00T", droids:[d("Mecha-Droid",6),d("Snow Mouse",4),d("Tri-Tek",5)]},
-  {level:29, credits:"68.00T", droids:[d("Cyclo-Grav",6),d("R7",6),d("RIC",5)]},
-  {level:30, credits:"100.00T", droids:[d("Opti-Strike",6),d("KX",5),d("DRFT-R",6)]},
+{level:1, credits:"10K", droids:[d("ID10",1),d("Mouse",1),d("Gonk",1)]},
+{level:2, credits:"150K", droids:[d("Roll-R",1,1),d("Senate Hovercam",1),d("NAV-EX",1,1)]},
+{level:3, credits:"975K", droids:[d("R4",1,1),d("Vect-Arm",1,1),d("BDX Explorer",2,1)]},
+{level:4, credits:"2.95M", droids:[d("2BB",2,1),d("Bal-Core",2,1),d("Orb-Walker",1,1)]},
+{level:5, credits:"5.35M", droids:[d("R4",2,1),d("Vect-Arm",2,1),d("NAV-EX",2,1)]},
+{level:6, credits:"9.85M", droids:[d("Gunrunner",1,1),d("2BB",3),d("Bal-Core",3,1)]},
+{level:7, credits:"14.5M", droids:[d("Roll-R",3),d("BDX Explorer",3),d("R2",2,1)]},
+{level:8, credits:"36M", droids:[d("R4",3),d("B2 Super",2,1),d("Gunrunner",2)]},
+{level:9, credits:"89M", droids:[d("NAV-EX",4),d("Strike-Orb",2,1),d("AMP Walker",2,1)]},
+{level:10, credits:"220M", droids:[d("Vect-Arm",4),d("R2",3,1),d("B2 Super",3,1)]},
+{level:11, credits:"550M", droids:[d("Bal-Core",4),d("Strike-Orb",3,1),d("B2 Heavy",3,1)]},
+{level:12, credits:"1.36B", droids:[d("Orb-Walker",4),d("R2",4),d("BB9",1,1)]},
+{level:13, credits:"3.40B", droids:[d("B2 Super",4),d("Mecha-Droid",1,1),d("Proto-Roller",1,1)]},
+{level:14, credits:"8.45B", droids:[d("B2 Heavy",4),d("B2-RP",1,1),d("R7",2,1)]},
+{level:15, credits:"21.00B", droids:[d("Strike-Orb",4,1),d("BB9",2,1),d("Proto-Roller",2,1)]},
+{level:16, credits:"52.00B", droids:[d("AMP Walker",4),d("Mecha-Droid",2,1),d("B2-RP",3,1)]},
+{level:17, credits:"130.00B", droids:[d("Opti-Pod",4),d("Mono-Walker",2,1),d("B2-RP",3,1)]},
+{level:18, credits:"325.00B", droids:[d("Util-Tech",4),d("BB9",3,1),d("Proto-Roller",3,1)]},
+{level:19, credits:"810.00B", droids:[d("Mecha-Droid",3,1),d("R7",4,1),d("B2-RP",4,1)]},
+{level:20, credits:"2.00T", droids:[d("Mono-Walker",4,1),d("Opti-Strike",4,1),d("Cyclo-Grav",4,1)]},
+{level:21, credits:"3.00T", droids:[d("LO",5),d("R6",5),d("Haul-R",5)]},
+{level:22, credits:"4.50T", droids:[d("Sen-Tri",5),d("Strike-Orb",5),d("Proto-Roller",5)]},
+{level:23, credits:"6.00T", droids:[d("BB9",5),d("Cyclo-Grav",5,1),d("B2-RP",5,1)]},
+{level:24, credits:"9.00T", droids:[d("Opti-Strike",5,1),d("B2-RP",5),d("Snow Mouse",1,1)]},
+{level:25, credits:"13.50T", droids:[d("Mono-Walker",5),d("Tri-Tek",2,1),d("RIC-1200",1,1)]},
+{level:26, credits:"21.00T", droids:[d("KX",2,1),d("DRFT-R",3),d("IG",4)]},
+{level:27, credits:"32.00T", droids:[d("LEP",3),d("Loadlifter",4),d("MO-Trak",5)]},
+{level:28, credits:"45.00T", droids:[d("Mecha-Droid",6),d("Snow Mouse",4),d("Tri-Tek",5)]},
+{level:29, credits:"68.00T", droids:[d("Cyclo-Grav",6),d("R7",6),d("RIC",5)]},
+{level:30, credits:"100.00T", droids:[d("Opti-Strike",6),d("KX",5),d("DRFT-R",6)]},
 ];
 
 const PATH3 = [
-  {level:1, credits:"10K", droids:[d("Mouse",1),d("Pit",1),d("Gonk",1)]},
-  {level:2, credits:"150K", droids:[d("R3",1,1),d("2BB",1,1),d("Senate Hovercam",1,1)]},
-  {level:3, credits:"975K", droids:[d("R8",1,1),d("R5",1,1),d("R4",1,1)]},
-  {level:4, credits:"2.95M", droids:[d("B1 Battle",2,1),d("R9",2,1),d("B1 Security",2,1)]},
-  {level:5, credits:"5.35M", droids:[d("R3",2,1),d("2BB",2,1),d("Senate Hovercam",2,1)]},
-  {level:6, credits:"9.85M", droids:[d("R5",3,1),d("R4",3,1),d("BDX Explorer",3,1)]},
-  {level:7, credits:"14.5M", droids:[d("R8",3),d("B1 Battle",3),d("R9",3)]},
-  {level:8, credits:"36M", droids:[d("R3",4),d("2BB",4),d("B1 Security",4)]},
-  {level:9, credits:"89M", droids:[d("R5",4),d("R4",4),d("BDX Explorer",4)]},
-  {level:10, credits:"220M", droids:[d("Senate Hovercam",4),d("Groundmech",1,1),d("Trak-R",1,1)]},
-  {level:11, credits:"550M", droids:[d("B2 Heavy",1,1),d("B2 Super",1,1),d("Util-Tech",1,1)]},
-  {level:12, credits:"1.36B", droids:[d("Bal-Core",4),d("Groundmech",2),d("Trak-R",2)]},
-  {level:13, credits:"3.40B", droids:[d("B2 Super",4,1),d("Mecha-Droid",1,1),d("Proto-Roller",1,1)]},
-  {level:14, credits:"8.45B", droids:[d("B2 Heavy",4),d("B2-RP",1,1),d("R7",2,1)]},
-  {level:15, credits:"21.00B", droids:[d("Strike-Orb",4),d("BB9",2,1),d("Proto-Roller",2,1)]},
-  {level:16, credits:"52.00B", droids:[d("AMP Walker",4),d("Mecha-Droid",2,1),d("B2-RP",3,1)]},
-  {level:17, credits:"130.00B", droids:[d("Opti-Pod",4,1),d("Mono-Walker",2,1),d("R7",3,1)]},
-  {level:18, credits:"325.00B", droids:[d("Util-Tech",4),d("BB9",3,1),d("Proto-Roller",3,1)]},
-  {level:19, credits:"810.00B", droids:[d("Mecha-Droid",3,1),d("R7",4,1),d("B2-RP",4,1)]},
-  {level:20, credits:"2.00T", droids:[d("Mono-Walker",4,1),d("Opti-Strike",4,1),d("Cyclo-Grav",4,1)]},
-  {level:21, credits:"3.00T", droids:[d("B2 Super",5),d("Opti-Pod",5),d("R2",5)]},
-  {level:22, credits:"4.50T", droids:[d("Gunrunner",5),d("LNG-Shot",5),d("B2-RP",5,1)]},
-  {level:23, credits:"6.00T", droids:[d("Mono-Walker",5),d("Cyclo-Grav",5),d("Mecha-Droid",5,1)]},
-  {level:24, credits:"9.00T", droids:[d("BB9",5,1),d("B2-RP",5),d("RIC",1,1)]},
-  {level:25, credits:"13.50T", droids:[d("Proto-Roller",5),d("Loadlifter",1),d("MO-Trak",2,1)]},
-  {level:26, credits:"21.00T", droids:[d("LEP",2,1),d("Tri-Tek",3),d("Snow Mouse",4)]},
-  {level:27, credits:"32.00T", droids:[d("RIC-1200",3),d("IG",4,1),d("DRFT-R",5,1)]},
-  {level:28, credits:"45.00T", droids:[d("BB9",6),d("RIC",4),d("MO-Trak",5)]},
-  {level:29, credits:"68.00T", droids:[d("Mecha-Droid",6),d("Opti-Strike",6),d("IG",5)]},
-  {level:30, credits:"100.00T", droids:[d("R7",6),d("LEP",5),d("DRFT-R",6)]},
+{level:1, credits:"10K", droids:[d("Mouse",1),d("Pit",1),d("Gonk",1)]},
+{level:2, credits:"150K", droids:[d("R3",1,1),d("2BB",1,1),d("Senate Hovercam",1,1)]},
+{level:3, credits:"975K", droids:[d("R8",1,1),d("R5",1,1),d("R4",1,1)]},
+{level:4, credits:"2.95M", droids:[d("B1 Battle",2,1),d("R9",2,1),d("B1 Security",2,1)]},
+{level:5, credits:"5.35M", droids:[d("R3",2,1),d("2BB",2,1),d("Senate Hovercam",2,1)]},
+{level:6, credits:"9.85M", droids:[d("R5",3,1),d("R4",3,1),d("BDX Explorer",3,1)]},
+{level:7, credits:"14.5M", droids:[d("R8",3),d("B1 Battle",3),d("R9",3)]},
+{level:8, credits:"36M", droids:[d("R3",4),d("2BB",4),d("B1 Security",4)]},
+{level:9, credits:"89M", droids:[d("R5",4),d("R4",4),d("BDX Explorer",4)]},
+{level:10, credits:"220M", droids:[d("Senate Hovercam",4),d("Groundmech",1,1),d("Trak-R",1,1)]},
+{level:11, credits:"550M", droids:[d("B2 Heavy",1,1),d("B2 Super",1,1),d("Util-Tech",1,1)]},
+{level:12, credits:"1.36B", droids:[d("Bal-Core",4),d("Groundmech",2),d("Trak-R",2)]},
+{level:13, credits:"3.40B", droids:[d("B2 Super",4,1),d("Mecha-Droid",1,1),d("Proto-Roller",1,1)]},
+{level:14, credits:"8.45B", droids:[d("B2 Heavy",4),d("B2-RP",1,1),d("R7",2,1)]},
+{level:15, credits:"21.00B", droids:[d("Strike-Orb",4),d("BB9",2,1),d("Proto-Roller",2,1)]},
+{level:16, credits:"52.00B", droids:[d("AMP Walker",4),d("Mecha-Droid",2,1),d("B2-RP",3,1)]},
+{level:17, credits:"130.00B", droids:[d("Opti-Pod",4,1),d("Mono-Walker",2,1),d("R7",3,1)]},
+{level:18, credits:"325.00B", droids:[d("Util-Tech",4),d("BB9",3,1),d("Proto-Roller",3,1)]},
+{level:19, credits:"810.00B", droids:[d("Mecha-Droid",3,1),d("R7",4,1),d("B2-RP",4,1)]},
+{level:20, credits:"2.00T", droids:[d("Mono-Walker",4,1),d("Opti-Strike",4,1),d("Cyclo-Grav",4,1)]},
+{level:21, credits:"3.00T", droids:[d("B2 Super",5),d("Opti-Pod",5),d("R2",5)]},
+{level:22, credits:"4.50T", droids:[d("Gunrunner",5),d("LNG-Shot",5),d("B2-RP",5,1)]},
+{level:23, credits:"6.00T", droids:[d("Mono-Walker",5),d("Cyclo-Grav",5),d("Mecha-Droid",5,1)]},
+{level:24, credits:"9.00T", droids:[d("BB9",5,1),d("B2-RP",5),d("RIC",1,1)]},
+{level:25, credits:"13.50T", droids:[d("Proto-Roller",5),d("Loadlifter",1),d("MO-Trak",2,1)]},
+{level:26, credits:"21.00T", droids:[d("LEP",2,1),d("Tri-Tek",3),d("Snow Mouse",4)]},
+{level:27, credits:"32.00T", droids:[d("RIC-1200",3),d("IG",4,1),d("DRFT-R",5,1)]},
+{level:28, credits:"45.00T", droids:[d("BB9",6),d("RIC",4),d("MO-Trak",5)]},
+{level:29, credits:"68.00T", droids:[d("Mecha-Droid",6),d("Opti-Strike",6),d("IG",5)]},
+{level:30, credits:"100.00T", droids:[d("R7",6),d("LEP",5),d("DRFT-R",6)]},
 ];
 
 const PATH4 = [
-  {level:1, credits:"10K", droids:[d("ID10",1),d("Pit",1),d("DRK-1 Probe",1)]},
-  {level:2, credits:"150K", droids:[d("R3",1,1),d("2BB",1,1),d("Senate Hovercam",1,1)]},
-  {level:3, credits:"975K", droids:[d("R5",2,1),d("R8",2,1),d("R4",1,1)]},
-  {level:4, credits:"2.95M", droids:[d("B1 Battle",2,1),d("R9",2,1),d("B1 Security",2,1)]},
-  {level:5, credits:"5.35M", droids:[d("R3",2,1),d("2BB",2,1),d("Senate Hovercam",2,1)]},
-  {level:6, credits:"9.85M", droids:[d("R5",3,1),d("R4",3,1),d("BDX Explorer",3,1)]},
-  {level:7, credits:"14.5M", droids:[d("R8",3),d("B1 Battle",3),d("R9",3)]},
-  {level:8, credits:"36M", droids:[d("R3",4),d("B1 Security",4),d("2BB",4)]},
-  {level:9, credits:"89M", droids:[d("R5",4),d("R4",4),d("BDX Explorer",4)]},
-  {level:10, credits:"220M", droids:[d("Senate Hovercam",4),d("Groundmech",1,1),d("Trak-R",1,1)]},
-  {level:11, credits:"550M", droids:[d("B2 Heavy",1,1),d("B2 Super",1,1),d("Util-Tech",1,1)]},
-  {level:12, credits:"1.36B", droids:[d("Bal-Core",4,1),d("Groundmech",2,1),d("Trak-R",2,1)]},
-  {level:13, credits:"3.40B", droids:[d("B2 Super",4,1),d("Mecha-Droid",1,1),d("Proto-Roller",1,1)]},
-  {level:14, credits:"8.45B", droids:[d("Bal-Core",3),d("Groundmech",3,1),d("Trak-R",4)]},
-  {level:15, credits:"21.00B", droids:[d("B2 Heavy",3),d("B2 Super",4,1),d("B2-RP",1,1)]},
-  {level:16, credits:"52.00B", droids:[d("Util-Tech",4),d("BB9",1,1),d("R7",2,1)]},
-  {level:17, credits:"130.00B", droids:[d("Opti-Strike",1,1),d("Cyclo-Grav",2,1),d("Mecha-Droid",2,1)]},
-  {level:18, credits:"325.00B", droids:[d("B2-RP",2,1),d("BB9",2,1),d("R7",3,1)]},
-  {level:19, credits:"810.00B", droids:[d("Mecha-Droid",3,1),d("R7",4,1),d("B2-RP",4,1)]},
-  {level:20, credits:"2.00T", droids:[d("Mono-Walker",4,1),d("Opti-Strike",4,1),d("Cyclo-Grav",4,1)]},
-  {level:21, credits:"3.00T", droids:[d("AMP Walker",5),d("Groundmech",5),d("Haul-R",5)]},
-  {level:22, credits:"4.50T", droids:[d("Gunrunner",5),d("Strike-Orb",5),d("B2 Super",5)]},
-  {level:23, credits:"6.00T", droids:[d("Mono-Walker",5,1),d("Cyclo-Grav",5),d("B2-RP",5)]},
-  {level:24, credits:"9.00T", droids:[d("Mecha-Droid",5),d("Proto-Roller",5),d("MO-Trak",1,1)]},
-  {level:25, credits:"13.50T", droids:[d("Opti-Strike",5,1),d("Tri-Tek",1,1),d("DRFT-R",2)]},
-  {level:26, credits:"21.00T", droids:[d("Cyclens",2,1),d("LEP",3),d("MO-Trak",4)]},
-  {level:27, credits:"32.00T", droids:[d("RIC-1200",3),d("Snow Mouse",4),d("Loadlifter",5)]},
-  {level:28, credits:"45.00T", droids:[d("Opti-Strike",6),d("IG",4,1),d("KX",5)]},
-  {level:29, credits:"68.00T", droids:[d("BB9",6),d("R7",6),d("Tri-Tek",5)]},
-  {level:30, credits:"100.00T", droids:[d("Mono-Walker",6),d("Cyclens",5),d("IG",6)]},
+{level:1, credits:"10K", droids:[d("ID10",1),d("Pit",1),d("DRK-1 Probe",1)]},
+{level:2, credits:"150K", droids:[d("R3",1,1),d("2BB",1,1),d("Senate Hovercam",1,1)]},
+{level:3, credits:"975K", droids:[d("R5",2,1),d("R8",2,1),d("R4",1,1)]},
+{level:4, credits:"2.95M", droids:[d("B1 Battle",2,1),d("R9",2,1),d("B1 Security",2,1)]},
+{level:5, credits:"5.35M", droids:[d("R3",2,1),d("2BB",2,1),d("Senate Hovercam",2,1)]},
+{level:6, credits:"9.85M", droids:[d("R5",3,1),d("R4",3,1),d("BDX Explorer",3,1)]},
+{level:7, credits:"14.5M", droids:[d("R8",3),d("B1 Battle",3),d("R9",3)]},
+{level:8, credits:"36M", droids:[d("R3",4),d("B1 Security",4),d("2BB",4)]},
+{level:9, credits:"89M", droids:[d("R5",4),d("R4",4),d("BDX Explorer",4)]},
+{level:10, credits:"220M", droids:[d("Senate Hovercam",4),d("Groundmech",1,1),d("Trak-R",1,1)]},
+{level:11, credits:"550M", droids:[d("B2 Heavy",1,1),d("B2 Super",1,1),d("Util-Tech",1,1)]},
+{level:12, credits:"1.36B", droids:[d("Bal-Core",4,1),d("Groundmech",2,1),d("Trak-R",2,1)]},
+{level:13, credits:"3.40B", droids:[d("B2 Super",4,1),d("Mecha-Droid",1,1),d("Proto-Roller",1,1)]},
+{level:14, credits:"8.45B", droids:[d("Bal-Core",3),d("Groundmech",3,1),d("Trak-R",4)]},
+{level:15, credits:"21.00B", droids:[d("B2 Heavy",3),d("B2 Super",4,1),d("B2-RP",1,1)]},
+{level:16, credits:"52.00B", droids:[d("Util-Tech",4),d("BB9",1,1),d("R7",2,1)]},
+{level:17, credits:"130.00B", droids:[d("Opti-Strike",1,1),d("Cyclo-Grav",2,1),d("Mecha-Droid",2,1)]},
+{level:18, credits:"325.00B", droids:[d("B2-RP",2,1),d("BB9",2,1),d("R7",3,1)]},
+{level:19, credits:"810.00B", droids:[d("Mecha-Droid",3,1),d("R7",4,1),d("B2-RP",4,1)]},
+{level:20, credits:"2.00T", droids:[d("Mono-Walker",4,1),d("Opti-Strike",4,1),d("Cyclo-Grav",4,1)]},
+{level:21, credits:"3.00T", droids:[d("AMP Walker",5),d("Groundmech",5),d("Haul-R",5)]},
+{level:22, credits:"4.50T", droids:[d("Gunrunner",5),d("Strike-Orb",5),d("B2 Super",5)]},
+{level:23, credits:"6.00T", droids:[d("Mono-Walker",5,1),d("Cyclo-Grav",5),d("B2-RP",5)]},
+{level:24, credits:"9.00T", droids:[d("Mecha-Droid",5),d("Proto-Roller",5),d("MO-Trak",1,1)]},
+{level:25, credits:"13.50T", droids:[d("Opti-Strike",5,1),d("Tri-Tek",1,1),d("DRFT-R",2)]},
+{level:26, credits:"21.00T", droids:[d("Cyclens",2,1),d("LEP",3),d("MO-Trak",4)]},
+{level:27, credits:"32.00T", droids:[d("RIC-1200",3),d("Snow Mouse",4),d("Loadlifter",5)]},
+{level:28, credits:"45.00T", droids:[d("Opti-Strike",6),d("IG",4,1),d("KX",5)]},
+{level:29, credits:"68.00T", droids:[d("BB9",6),d("R7",6),d("Tri-Tek",5)]},
+{level:30, credits:"100.00T", droids:[d("Mono-Walker",6),d("Cyclens",5),d("IG",6)]},
 ];
 
 const PATHS = {1: PATH1, 2: PATH2, 3: PATH3, 4: PATH4};
@@ -388,256 +505,338 @@ let completedLevels = {}; // key "path-level" -> true
 let saveTimeout = null;
 
 async function loadInventory(){
-  try{
-    const v = localStorage.getItem('droid-tycoon-inventory-p34');
-    if(v){ inventory = JSON.parse(v); }
-  }catch(e){ inventory = {}; }
-  try{
-    const v2 = localStorage.getItem('droid-tycoon-completed-p34');
-    if(v2){ completedLevels = JSON.parse(v2); }
-  }catch(e){ completedLevels = {}; }
-  render();
+try{
+const v = localStorage.getItem('droid-tycoon-inventory-p34');
+if(v){ inventory = JSON.parse(v); }
+}catch(e){ inventory = {}; }
+try{
+const v2 = localStorage.getItem('droid-tycoon-completed-p34');
+if(v2){ completedLevels = JSON.parse(v2); }
+}catch(e){ completedLevels = {}; }
+render();
 }
 
 async function saveInventory(){
-  document.getElementById('saveNote').textContent = 'Αποθήκευση...';
-  try{
-    localStorage.setItem('droid-tycoon-inventory-p34', JSON.stringify(inventory));
-    localStorage.setItem('droid-tycoon-completed-p34', JSON.stringify(completedLevels));
-    document.getElementById('saveNote').textContent = 'Αποθηκεύτηκε ✓ (τοπικά σε αυτόν τον browser)';
-  }catch(e){
-    document.getElementById('saveNote').textContent = 'Σφάλμα αποθήκευσης (θα ξαναδοκιμάσει)';
-  }
+document.getElementById('saveNote').textContent = t('saveNoteSaving');
+try{
+localStorage.setItem('droid-tycoon-inventory-p34', JSON.stringify(inventory));
+localStorage.setItem('droid-tycoon-completed-p34', JSON.stringify(completedLevels));
+document.getElementById('saveNote').textContent = t('saveNoteSaved');
+}catch(e){
+document.getElementById('saveNote').textContent = t('saveNoteError');
+}
 }
 function queueSave(){ clearTimeout(saveTimeout); saveTimeout = setTimeout(saveInventory, 400); }
 
 function levelKey(level){ return currentPath + "-" + level; }
 function isMarkedDone(level){ return !!completedLevels[levelKey(level)]; }
 function toggleDone(level){
-  const key = levelKey(level);
-  if(completedLevels[key]) delete completedLevels[key];
-  else completedLevels[key] = true;
-  queueSave();
-  renderMain();
-  scrollToCurrent();
+const key = levelKey(level);
+if(completedLevels[key]) delete completedLevels[key];
+else completedLevels[key] = true;
+queueSave();
+renderMain();
+scrollToCurrent();
 }
 
 function renderInventory(filter=""){
-  const list = document.getElementById('inventoryList');
-  list.innerHTML = "";
-  droidNames
-    .filter(n => n.toLowerCase().includes(filter.toLowerCase()))
-    .forEach(name => {
-      const row = document.createElement('div');
-      row.className = 'inv-row';
-      const label = document.createElement('label');
-      label.innerHTML = `${name} ${rarityBadge(name)}`;
-      const select = document.createElement('select');
-      TIERS.forEach((t,i) => {
-        const opt = document.createElement('option');
-        opt.value = i; opt.textContent = t;
-        if((inventory[name]||0) === i) opt.selected = true;
-        select.appendChild(opt);
-      });
-      select.addEventListener('change', () => {
-        inventory[name] = parseInt(select.value,10);
-        queueSave();
-        renderMain();
-      });
-      row.appendChild(label);
-      row.appendChild(select);
-      list.appendChild(row);
-    });
+const list = document.getElementById('inventoryList');
+list.innerHTML = "";
+droidNames
+.filter(n => n.toLowerCase().includes(filter.toLowerCase()))
+.forEach(name => {
+const row = document.createElement('div');
+row.className = 'inv-row';
+const label = document.createElement('label');
+label.innerHTML = `${name} ${rarityBadge(name)}`;
+const select = document.createElement('select');
+TIERS.forEach((tLabel,i) => {
+const opt = document.createElement('option');
+opt.value = i; opt.textContent = tLabel;
+if((inventory[name]||0) === i) opt.selected = true;
+select.appendChild(opt);
+});
+select.addEventListener('change', () => {
+inventory[name] = parseInt(select.value,10);
+queueSave();
+renderMain();
+});
+row.appendChild(label);
+row.appendChild(select);
+list.appendChild(row);
+});
 }
 
 function ownedTier(name){ return inventory[name] || 0; }
 function isRebirthSatisfied(rb){ return rb.droids.every(([name,tier]) => ownedTier(name) >= tier); }
 
 function renderSellSuggestions(){
-  const REBIRTHS = PATHS[currentPath];
-  document.getElementById('sellPathLabel').textContent = currentPath;
+const REBIRTHS = PATHS[currentPath];
+document.getElementById('txtSellDesc').textContent = t('sellDesc')(currentPath);
 
-  // droids still required by any not-yet-done rebirth in this path
-  const stillNeeded = new Set();
-  REBIRTHS.forEach(rb => {
-    if(!isMarkedDone(rb.level)){
-      rb.droids.forEach(([name]) => stillNeeded.add(name));
-    }
-  });
+const stillNeeded = new Set();
+REBIRTHS.forEach(rb => {
+if(!isMarkedDone(rb.level)){
+rb.droids.forEach(([name]) => stillNeeded.add(name));
+}
+});
 
-  const sellList = document.getElementById('sellList');
-  sellList.innerHTML = "";
+const sellList = document.getElementById('sellList');
+sellList.innerHTML = "";
 
-  const ownedNames = Object.keys(inventory).filter(name => (inventory[name]||0) > 0);
-  const sellable = ownedNames.filter(name => !stillNeeded.has(name));
+const ownedNames = Object.keys(inventory).filter(name => (inventory[name]||0) > 0);
+const sellable = ownedNames.filter(name => !stillNeeded.has(name));
 
-  if(ownedNames.length === 0){
-    sellList.innerHTML = `<div class="save-note">Δεν έχεις καταχωρήσει ακόμα droids στο απόθεμά σου.</div>`;
-    return;
-  }
-  if(sellable.length === 0){
-    sellList.innerHTML = `<div class="save-note">Όλα τα droids που έχεις καταχωρήσει χρειάζονται ακόμα σε κάποιο επόμενο rebirth — μην πουλήσεις τίποτα προς το παρόν.</div>`;
-    return;
-  }
-  sellable.forEach(name => {
-    const tier = inventory[name];
-    const chip = document.createElement('div');
-    chip.className = 'need-chip ok';
-    chip.innerHTML = `🗑️ ${name} <span class="tier-tag ${TIER_CLASS[tier]}">${TIERS[tier]}</span>${rarityBadge(name)}`;
-    sellList.appendChild(chip);
-  });
+if(ownedNames.length === 0){
+sellList.innerHTML = `<div class="save-note">${t('sellEmptyInv')}</div>`;
+return;
+}
+if(sellable.length === 0){
+sellList.innerHTML = `<div class="save-note">${t('sellNothing')}</div>`;
+return;
+}
+sellable.forEach(name => {
+const tier = inventory[name];
+const chip = document.createElement('div');
+chip.className = 'need-chip ok';
+chip.innerHTML = `🗑️ ${name} <span class="tier-tag ${TIER_CLASS[tier]}">${TIERS[tier]}</span>${rarityBadge(name)}`;
+sellList.appendChild(chip);
+});
 }
 
 function renderMain(){
-  const REBIRTHS = PATHS[currentPath];
-  document.getElementById('pathLabel').textContent = "Path " + currentPath;
+const REBIRTHS = PATHS[currentPath];
+document.getElementById('pathLabel').textContent = "Path " + currentPath;
 
-  // Progress is driven by the manual "done" checkboxes (since your base has a
-  // droid capacity limit, you can't hold everything at once — what you actually
-  // completed matters more than what's sitting in your inventory right now).
-  let currentIdx = REBIRTHS.findIndex(rb => !isMarkedDone(rb.level));
-  const total = REBIRTHS.length;
-  const doneCount = currentIdx === -1 ? total : currentIdx;
+let currentIdx = REBIRTHS.findIndex(rb => !isMarkedDone(rb.level));
+const total = REBIRTHS.length;
+const doneCount = currentIdx === -1 ? total : currentIdx;
 
-  const currentLevelEl = document.getElementById('currentLevel');
-  const currentCreditsEl = document.getElementById('currentCredits');
-  const currentNeedsEl = document.getElementById('currentNeeds');
-  const progressBar = document.getElementById('progressBar');
-  const progressText = document.getElementById('progressText');
+const currentLevelEl = document.getElementById('currentLevel');
+const currentCreditsEl = document.getElementById('currentCredits');
+const currentNeedsEl = document.getElementById('currentNeeds');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
 
-  progressBar.style.width = Math.round((doneCount/total)*100) + "%";
-  progressText.textContent = `${doneCount} / ${total} rebirths σημειωμένα ως ολοκληρωμένα (Path ${currentPath})`;
+progressBar.style.width = Math.round((doneCount/total)*100) + "%";
+progressText.textContent = t('progressText')(doneCount, total, currentPath);
 
-  if(currentIdx === -1){
-    currentLevelEl.textContent = "Όλα ολοκληρωμένα! 🎉";
-    currentCreditsEl.textContent = `Έχεις σημειώσει όλα τα rebirths ως και το ${total} του Path ${currentPath}.`;
-    currentNeedsEl.innerHTML = "";
-  }else{
-    const rb = REBIRTHS[currentIdx];
-    currentLevelEl.textContent = `Rebirth ${rb.level}`;
-    currentCreditsEl.textContent = `Χρειάζεσαι: ${rb.credits} credits`;
-    currentNeedsEl.innerHTML = "";
-    rb.droids.forEach(([name,tier,reused]) => {
-      const chip = document.createElement('div');
-      const ok = ownedTier(name) >= tier;
-      chip.className = 'need-chip ' + (ok ? 'ok' : 'missing');
-      chip.innerHTML = `<span>${ok?'✅':'❌'}</span> ${name} <span class="tier-tag ${TIER_CLASS[tier]}">${TIERS[tier]}</span>${rarityBadge(name)}${reused?'<span class="reuse-star">★</span>':''}`;
-      currentNeedsEl.appendChild(chip);
-    });
-  }
+if(currentIdx === -1){
+currentLevelEl.textContent = t('allDone');
+currentCreditsEl.textContent = t('allDoneDesc')(total, currentPath);
+currentNeedsEl.innerHTML = "";
+}else{
+const rb = REBIRTHS[currentIdx];
+currentLevelEl.textContent = `Rebirth ${rb.level}`;
+currentCreditsEl.textContent = t('needCredits')(rb.credits);
+currentNeedsEl.innerHTML = "";
+rb.droids.forEach(([name,tier,reused]) => {
+const chip = document.createElement('div');
+const ok = ownedTier(name) >= tier;
+chip.className = 'need-chip ' + (ok ? 'ok' : 'missing');
+chip.innerHTML = `<span>${ok?'✅':'❌'}</span> ${name} <span class="tier-tag ${TIER_CLASS[tier]}">${TIERS[tier]}</span>${rarityBadge(name)}${reused?'<span class="reuse-star">★</span>':''}`;
+currentNeedsEl.appendChild(chip);
+});
+}
 
-  const listEl = document.getElementById('rebirthList');
-  listEl.innerHTML = "";
-  REBIRTHS.forEach((rb, idx) => {
-    const done = isMarkedDone(rb.level);
-    const card = document.createElement('div');
-    card.className = 'rebirth-card' + (done ? ' done' : '') + (idx === currentIdx ? ' current' : '');
+const listEl = document.getElementById('rebirthList');
+listEl.innerHTML = "";
+REBIRTHS.forEach((rb, idx) => {
+const done = isMarkedDone(rb.level);
+const card = document.createElement('div');
+card.className = 'rebirth-card' + (done ? ' done' : '') + (idx === currentIdx ? ' current' : '');
 
-    const left = document.createElement('div');
-    left.className = 'rb-left';
+const left = document.createElement('div');
+left.className = 'rb-left';
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = done;
-    checkbox.title = 'Το έχω κάνει ήδη';
-    checkbox.style.width = '18px';
-    checkbox.style.height = '18px';
-    checkbox.style.cursor = 'pointer';
-    checkbox.addEventListener('change', () => toggleDone(rb.level));
-    left.appendChild(checkbox);
+const checkbox = document.createElement('input');
+checkbox.type = 'checkbox';
+checkbox.checked = done;
+checkbox.title = t('checkboxTitle');
+checkbox.style.width = '18px';
+checkbox.style.height = '18px';
+checkbox.style.cursor = 'pointer';
+checkbox.addEventListener('change', () => toggleDone(rb.level));
+left.appendChild(checkbox);
 
-    const num = document.createElement('div');
-    num.className = 'rb-num';
-    num.textContent = rb.level;
-    left.appendChild(num);
-    const cred = document.createElement('div');
-    cred.className = 'rb-credits';
-    cred.textContent = rb.credits;
-    left.appendChild(cred);
+const num = document.createElement('div');
+num.className = 'rb-num';
+num.textContent = rb.level;
+left.appendChild(num);
+const cred = document.createElement('div');
+cred.className = 'rb-credits';
+cred.textContent = rb.credits;
+left.appendChild(cred);
 
-    const droidsWrap = document.createElement('div');
-    droidsWrap.className = 'rb-droids';
-    rb.droids.forEach(([name,tier,reused]) => {
-      const ok = ownedTier(name) >= tier;
-      const chip = document.createElement('div');
-      chip.className = 'need-chip ' + (ok ? 'ok' : 'missing');
-      chip.innerHTML = `${name} <span class="tier-tag ${TIER_CLASS[tier]}">${TIERS[tier]}</span>${rarityBadge(name)}${reused?'<span class="reuse-star">★</span>':''}<span class="status-icon">${ok?'✅':'❌'}</span>`;
-      droidsWrap.appendChild(chip);
-    });
+const droidsWrap = document.createElement('div');
+droidsWrap.className = 'rb-droids';
+rb.droids.forEach(([name,tier,reused]) => {
+const ok = ownedTier(name) >= tier;
+const chip = document.createElement('div');
+chip.className = 'need-chip ' + (ok ? 'ok' : 'missing');
+chip.innerHTML = `${name} <span class="tier-tag ${TIER_CLASS[tier]}">${TIERS[tier]}</span>${rarityBadge(name)}${reused?'<span class="reuse-star">★</span>':''}<span class="status-icon">${ok?'✅':'❌'}</span>`;
+droidsWrap.appendChild(chip);
+});
 
-    card.appendChild(left);
-    card.appendChild(droidsWrap);
-    listEl.appendChild(card);
-  });
+card.appendChild(left);
+card.appendChild(droidsWrap);
+listEl.appendChild(card);
+});
 
-  renderSellSuggestions();
+renderSellSuggestions();
+}
+
+function applyStaticTranslations(){
+document.getElementById('txtSubtitle').textContent = t('subtitle');
+document.getElementById('txtPathNote').textContent = t('pathNote');
+document.getElementById('compactToggle').textContent = t('compactToggle');
+document.getElementById('superRebirthBtn').textContent = t('superRebirthBtn');
+document.getElementById('txtInventoryTitle').textContent = t('inventoryTitle');
+document.getElementById('search').placeholder = t('searchPlaceholder');
+document.getElementById('resetBtn').textContent = t('resetBtn');
+document.getElementById('saveNote').textContent = t('saveNoteDefault');
+document.getElementById('txtNextGoal').textContent = t('nextGoal');
+document.getElementById('txtSellTitle').textContent = t('sellTitle');
+document.getElementById('txtRebirthsTitle').textContent = t('rebirthsTitle');
+document.getElementById('txtLegendCheck').textContent = t('legendCheck');
+document.getElementById('txtLegendDone').textContent = t('legendDone');
+document.getElementById('txtLegendNext').textContent = t('legendNext');
+document.getElementById('txtLegendTier').textContent = t('legendTier');
+document.getElementById('txtLegendReuse').textContent = t('legendReuse');
+document.getElementById('txtFootnote').innerHTML = t('footnote');
+document.getElementById('feedbackBtn').textContent = t('feedbackBtn');
+document.getElementById('txtFeedbackTitle').textContent = t('feedbackTitle');
+document.getElementById('feedbackText').placeholder = t('feedbackPlaceholder');
+document.getElementById('feedbackCancelBtn').textContent = t('feedbackCancel');
+document.getElementById('feedbackCopyBtn').textContent = t('feedbackCopy');
+document.getElementById('feedbackSendBtn').textContent = t('feedbackSend');
 }
 
 function render(){
-  renderInventory(document.getElementById('search').value);
-  renderMain();
+renderInventory(document.getElementById('search').value);
+renderMain();
 }
 
 document.getElementById('search').addEventListener('input', (e) => renderInventory(e.target.value));
+
 document.getElementById('resetBtn').addEventListener('click', () => {
-  inventory = {};
-  queueSave();
-  render();
+inventory = {};
+queueSave();
+render();
 });
+
 document.getElementById('superRebirthBtn').addEventListener('click', () => {
-  const confirmed = confirm("Σίγουρα έκανες Super Rebirth; Θα μηδενιστούν ΟΛΑ τα droids στο inventory σου και θα προχωρήσεις στο επόμενο path.");
-  if(!confirmed) return;
-  inventory = {};
-  const nextPath = currentPath === 4 ? 1 : currentPath + 1;
-  currentPath = nextPath;
-  [1,2,3,4].forEach(q => {
-    document.getElementById('tabPath'+q).classList.toggle('active', q === nextPath);
-  });
-  queueSave();
-  render();
+const confirmed = confirm(t('confirmSuperRebirth'));
+if(!confirmed) return;
+inventory = {};
+const nextPath = currentPath === 4 ? 1 : currentPath + 1;
+currentPath = nextPath;
+[1,2,3,4].forEach(q => {
+document.getElementById('tabPath'+q).classList.toggle('active', q === nextPath);
+});
+queueSave();
+render();
 });
 
 [1,2,3,4].forEach(p => {
-  document.getElementById('tabPath'+p).addEventListener('click', () => {
-    currentPath = p;
-    [1,2,3,4].forEach(q => {
-      document.getElementById('tabPath'+q).classList.toggle('active', q === p);
-    });
-    renderMain();
-  });
+document.getElementById('tabPath'+p).addEventListener('click', () => {
+currentPath = p;
+[1,2,3,4].forEach(q => {
+document.getElementById('tabPath'+q).classList.toggle('active', q === p);
+});
+renderMain();
+});
 });
 
 document.getElementById('compactToggle').addEventListener('click', () => {
-  const isCompact = document.body.classList.toggle('compact');
-  document.getElementById('compactToggle').classList.toggle('active', isCompact);
-  try{ localStorage.setItem('droid-tycoon-compact-p34', isCompact ? '1' : '0'); }catch(e){}
-  scrollToCurrent();
+const isCompact = document.body.classList.toggle('compact');
+document.getElementById('compactToggle').classList.toggle('active', isCompact);
+try{ localStorage.setItem('droid-tycoon-compact-p34', isCompact ? '1' : '0'); }catch(e){}
+scrollToCurrent();
 });
 
 async function loadCompactPref(){
-  try{
-    const v = localStorage.getItem('droid-tycoon-compact-p34');
-    if(v === '1'){
-      document.body.classList.add('compact');
-      document.getElementById('compactToggle').classList.add('active');
-    }
-  }catch(e){}
+try{
+const v = localStorage.getItem('droid-tycoon-compact-p34');
+if(v === '1'){
+document.body.classList.add('compact');
+document.getElementById('compactToggle').classList.add('active');
+}
+}catch(e){}
+}
+
+function setLanguage(newLang){
+lang = newLang;
+TIERS = TIER_LABELS[lang];
+document.getElementById('langEl').classList.toggle('active', lang === 'el');
+document.getElementById('langEn').classList.toggle('active', lang === 'en');
+document.documentElement.lang = lang;
+try{ localStorage.setItem('droid-tycoon-lang', lang); }catch(e){}
+applyStaticTranslations();
+render();
+}
+
+document.getElementById('langEl').addEventListener('click', () => setLanguage('el'));
+document.getElementById('langEn').addEventListener('click', () => setLanguage('en'));
+
+async function loadLangPref(){
+try{
+const v = localStorage.getItem('droid-tycoon-lang');
+if(v === 'en' || v === 'el'){ lang = v; TIERS = TIER_LABELS[lang]; }
+}catch(e){}
+document.getElementById('langEl').classList.toggle('active', lang === 'el');
+document.getElementById('langEn').classList.toggle('active', lang === 'en');
+document.documentElement.lang = lang;
+applyStaticTranslations();
 }
 
 function scrollToCurrent(){
-  setTimeout(() => {
-    const el = document.querySelector('.rebirth-card.current');
-    if(el) el.scrollIntoView({block:'center', behavior:'smooth'});
-  }, 50);
+setTimeout(() => {
+const el = document.querySelector('.rebirth-card.current');
+if(el) el.scrollIntoView({block:'center', behavior:'smooth'});
+}, 50);
 }
 
+document.getElementById('feedbackBtn').addEventListener('click', () => {
+document.getElementById('feedbackModal').style.display = 'flex';
+document.getElementById('feedbackNote').textContent = '';
+});
+document.getElementById('feedbackCancelBtn').addEventListener('click', () => {
+document.getElementById('feedbackModal').style.display = 'none';
+});
+document.getElementById('feedbackModal').addEventListener('click', (e) => {
+if(e.target.id === 'feedbackModal') document.getElementById('feedbackModal').style.display = 'none';
+});
+document.getElementById('feedbackCopyBtn').addEventListener('click', async () => {
+const val = document.getElementById('feedbackText').value.trim();
+if(!val){ document.getElementById('feedbackNote').textContent = t('feedbackEmpty'); return; }
+try{
+await navigator.clipboard.writeText(val);
+document.getElementById('feedbackNote').textContent = t('feedbackCopied');
+}catch(e){
+document.getElementById('feedbackText').select();
+document.execCommand('copy');
+document.getElementById('feedbackNote').textContent = t('feedbackCopied');
+}
+});
+document.getElementById('feedbackSendBtn').addEventListener('click', () => {
+const val = document.getElementById('feedbackText').value.trim();
+if(!val){ document.getElementById('feedbackNote').textContent = t('feedbackEmpty'); return; }
+const title = encodeURIComponent(t('feedbackIssueTitle'));
+const body = encodeURIComponent(val);
+const url = `https://github.com/deznexen/droidmanage/issues/new?title=${title}&body=${body}`;
+window.open(url, '_blank');
+document.getElementById('feedbackModal').style.display = 'none';
+document.getElementById('feedbackText').value = '';
+});
+
 async function init(){
-  await loadCompactPref();
-  await loadInventory();
-  scrollToCurrent();
+await loadLangPref();
+await loadCompactPref();
+await loadInventory();
+scrollToCurrent();
 }
 init();
 </script>
-
 </body>
 </html>
