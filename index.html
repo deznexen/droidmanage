@@ -153,6 +153,18 @@ padding:6px 10px;font-size:.75rem;cursor:pointer;margin-top:12px;
 .reset-btn:hover{border-color:var(--bad);color:var(--bad);}
 .save-note{font-size:.7rem;color:var(--muted);margin-top:8px;}
 .footnote{font-size:.75rem;color:var(--muted);margin-top:16px;line-height:1.4;}
+.spawn-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.spawn-chip{
+background:var(--panel2);border:1px solid var(--border);border-radius:10px;
+padding:8px 14px;display:flex;align-items:center;gap:8px;font-size:.8rem;
+}
+.spawn-chip .spawn-icon{font-size:1.1rem;}
+.spawn-chip .spawn-time{font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;}
+.spawn-chip .spawn-label{color:var(--muted);}
+.reward-chip{
+padding:2px 6px;border-radius:6px;font-size:.65rem;font-weight:700;
+border:1px solid #6b4fc9;color:#c4b5fd;background:rgba(167,139,250,.1);
+}
 </style>
 </head>
 <body>
@@ -163,6 +175,12 @@ padding:6px 10px;font-size:.75rem;cursor:pointer;margin-top:12px;
 <div class="lang-tabs">
 <button class="lang-tab active" id="langEl">Ελληνικά</button>
 <button class="lang-tab" id="langEn">English</button>
+</div>
+
+<div class="spawn-bar" id="spawnBar">
+<div class="spawn-chip">🟠 <span class="spawn-label" id="spawnBeskarLabel"></span> <span class="spawn-time" id="spawnBeskarTime">--:--</span></div>
+<div class="spawn-chip">🔴 <span class="spawn-label" id="spawnMythicLabel"></span> <span class="spawn-time" id="spawnMythicTime">--:--</span></div>
+<div class="spawn-chip">🟣 <span class="spawn-label" id="spawnGalacticLabel"></span> <span class="spawn-time" id="spawnGalacticTime">--:--</span></div>
 </div>
 
 <div class="path-tabs">
@@ -209,6 +227,12 @@ padding:6px 10px;font-size:.75rem;cursor:pointer;margin-top:12px;
 <div class="need-list" id="currentNeeds"></div>
 <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
 <div class="save-note" id="progressText"></div>
+</div>
+
+<div class="panel" id="dealPanel">
+<h2 id="txtDealTitle"></h2>
+<div id="dealContent" class="save-note" style="margin-top:0;"></div>
+<button class="reset-btn" id="reportDealBtn" style="margin-top:10px;"></button>
 </div>
 
 <div class="panel" id="sellPanel">
@@ -262,7 +286,7 @@ legendDone: "🟢 Ολοκληρωμένο",
 legendNext: "🔵 Επόμενος στόχος",
 legendTier: "✅/❌ = αν έχεις τώρα το tier του droid στη βάση σου",
 legendReuse: "★ = ξαναχρειάζεται σε επόμενο rebirth — μην το πουλήσεις",
-footnote: `Δεδομένα Path 1–4 (Rebirth 1–30 σε κάθε path). Το ★ δείχνει droids που χρειάζονται ξανά σε επόμενο rebirth level στο ίδιο path — καλό είναι να μην τα πουλήσεις πρόωρα.<br>Το χρωματιστό label δίπλα σε κάθε droid (Common/Rare/Epic/Legendary/Mythic) δείχνει τη rarity του, από τον επίσημο πίνακα Droidex.<br>Επειδή η βάση σου έχει όριο στο πόσα droids μπορείς να έχεις ταυτόχρονα, η πρόοδος/επόμενος στόχος υπολογίζεται από το checkbox που τσεκάρεις εσύ σε κάθε rebirth ("το έχω κάνει"), όχι αυτόματα από το inventory. Το inventory panel και τα ✅/❌ δίπλα σε κάθε droid μένουν σαν βοήθημα.`,
+footnote: `Δεδομένα Path 1–4 (Rebirth 1–30 σε κάθε path). Το ★ δείχνει droids που χρειάζονται ξανά σε επόμενο rebirth level στο ίδιο path — καλό είναι να μην τα πουλήσεις πρόωρα.<br>Το χρωματιστό label δίπλα σε κάθε droid (Common/Rare/Epic/Legendary/Mythic) δείχνει τη rarity του, από τον επίσημο πίνακα Droidex.<br>Τα 💎 Nova Crystals και τα ποσοστά credit/XP multiplier ανά rebirth (από RB12+) είναι από το community "RBC Check Sheet" (credit: starscurse) — πέρασε πάνω από το 💎 badge για λεπτομέρειες.<br>Οι χρόνοι spawn (Beskar/Mythic/Galactic) είναι υπολογισμένοι με βάση την τοπική ώρα του browser σου· αν το παιχνίδι χρησιμοποιεί διαφορετική ζώνη ώρας server, μπορεί να διαφέρουν ελαφρώς.<br>Το «Τρέχον Limited Deal» δείχνει το πιο πρόσφατο comment από όσους το αναφέρουν — δεν διαβάζεται αυτόματα από το παιχνίδι, κάποιος πρέπει να το δει και να το γράψει. Πάτα "📢 Ανέφερε το τρέχον deal" αν το ξέρεις.<br>Επειδή η βάση σου έχει όριο στο πόσα droids μπορείς να έχεις ταυτόχρονα, η πρόοδος/επόμενος στόχος υπολογίζεται από το checkbox που τσεκάρεις εσύ σε κάθε rebirth ("το έχω κάνει"), όχι αυτόματα από το inventory. Το inventory panel και τα ✅/❌ δίπλα σε κάθε droid μένουν σαν βοήθημα.`,
 allDone: "Όλα ολοκληρωμένα! 🎉",
 allDoneDesc: (total, p) => `Έχεις σημειώσει όλα τα rebirths ως και το ${total} του Path ${p}.`,
 needCredits: (c) => `Χρειάζεσαι: ${c} credits`,
@@ -278,6 +302,17 @@ feedbackSend: "Άνοιγμα σε GitHub Issue",
 feedbackCopied: "Αντιγράφηκε ✓ — μπορείς να το επικολλήσεις όπου θες.",
 feedbackEmpty: "Γράψε κάτι πρώτα.",
 feedbackIssueTitle: "Πρόταση από χρήστη",
+spawnBeskar: "Beskar σε",
+spawnMythic: "Mythic σε",
+spawnGalactic: "Galactic σε",
+rewardTooltip: (crystals, credit, xp) => `💎 ${crystals} Nova Crystals • +${credit}% credits • +${xp}% XP`,
+dealTitle: "🧩 Τρέχον Limited Deal",
+dealLoading: "Φόρτωση...",
+dealNone: "Δεν έχει αναφερθεί ακόμα κανένα deal.",
+dealReportedBy: (name, mins) => `Ανέφερε ο/η ${name}, πριν ${mins} λεπτά`,
+dealReportedByNow: (name) => `Ανέφερε ο/η ${name}, μόλις τώρα`,
+dealError: "Δεν μπόρεσα να φορτώσω το τρέχον deal (δοκίμασε ξανά αργότερα).",
+reportDealBtn: "📢 Ανέφερε το τρέχον deal",
 },
 en: {
 title: "🤖 Star Wars Droid Tycoon — Rebirth Tracker",
@@ -303,7 +338,7 @@ legendDone: "🟢 Completed",
 legendNext: "🔵 Next target",
 legendTier: "✅/❌ = whether you currently have that droid's tier on your base",
 legendReuse: "★ = needed again in a later rebirth — don't sell it",
-footnote: `Path 1–4 data (Rebirth 1–30 in each path). ★ marks droids needed again at a later rebirth level in the same path — don't sell those early.<br>The colored label next to each droid (Common/Rare/Epic/Legendary/Mythic) shows its rarity, from the official Droidex table.<br>Because your base has a limit on how many droids you can hold at once, progress/next target is driven by the checkbox you tick on each rebirth ("done it"), not automatically from your inventory. The inventory panel and the ✅/❌ next to each droid are just a helper.`,
+footnote: `Path 1–4 data (Rebirth 1–30 in each path). ★ marks droids needed again at a later rebirth level in the same path — don't sell those early.<br>The colored label next to each droid (Common/Rare/Epic/Legendary/Mythic) shows its rarity, from the official Droidex table.<br>The 💎 Nova Crystals and credit/XP multiplier percentages per rebirth (from RB12+) come from the community "RBC Check Sheet" (credit: starscurse) — hover the 💎 badge for details.<br>Spawn times (Beskar/Mythic/Galactic) are calculated from your browser's local clock; if the game uses a different server time zone they may be slightly off.<br>The "Current Limited Deal" box shows the most recent comment from anyone who reported it — it isn't read automatically from the game, someone has to see it and write it down. Click "📢 Report the current deal" if you know it.<br>Because your base has a limit on how many droids you can hold at once, progress/next target is driven by the checkbox you tick on each rebirth ("done it"), not automatically from your inventory. The inventory panel and the ✅/❌ next to each droid are just a helper.`,
 allDone: "All done! 🎉",
 allDoneDesc: (total, p) => `You've marked all rebirths up to ${total} in Path ${p} as done.`,
 needCredits: (c) => `You need: ${c} credits`,
@@ -319,6 +354,17 @@ feedbackSend: "Open as GitHub Issue",
 feedbackCopied: "Copied ✓ — paste it wherever you like.",
 feedbackEmpty: "Write something first.",
 feedbackIssueTitle: "User suggestion",
+spawnBeskar: "Beskar in",
+spawnMythic: "Mythic in",
+spawnGalactic: "Galactic in",
+rewardTooltip: (crystals, credit, xp) => `💎 ${crystals} Nova Crystals • +${credit}% credits • +${xp}% XP`,
+dealTitle: "🧩 Current Limited Deal",
+dealLoading: "Loading...",
+dealNone: "No deal reported yet.",
+dealReportedBy: (name, mins) => `Reported by ${name}, ${mins} min ago`,
+dealReportedByNow: (name) => `Reported by ${name}, just now`,
+dealError: "Couldn't load the current deal (try again later).",
+reportDealBtn: "📢 Report the current deal",
 }
 };
 function t(key){ return TRANSLATIONS[lang][key]; }
@@ -493,6 +539,27 @@ const PATH4 = [
 {level:30, credits:"100.00T", droids:[d("Mono-Walker",6),d("Cyclens",5),d("IG",6)]},
 ];
 
+// Super Rebirth Cycle rewards per rebirth level (Nova Crystals + Credit/XP multipliers),
+// from the community-maintained "RBC Check Sheet" (credit: starscurse). Same across paths —
+// only levels 12+ grant crystals per the sheet.
+const REWARDS = {
+12:{crystals:11, credit:22, xp:110}, 13:{crystals:16, credit:32, xp:160},
+14:{crystals:22, credit:44, xp:220}, 15:{crystals:29, credit:58, xp:290},
+16:{crystals:37, credit:74, xp:370}, 17:{crystals:46, credit:92, xp:460},
+18:{crystals:56, credit:112, xp:560}, 19:{crystals:67, credit:134, xp:670},
+20:{crystals:79, credit:158, xp:790}, 21:{crystals:92, credit:184, xp:920},
+22:{crystals:106, credit:212, xp:1060}, 23:{crystals:121, credit:242, xp:1210},
+24:{crystals:137, credit:274, xp:1370}, 25:{crystals:154, credit:308, xp:1540},
+26:{crystals:172, credit:344, xp:1720}, 27:{crystals:191, credit:382, xp:1910},
+28:{crystals:211, credit:422, xp:2110}, 29:{crystals:232, credit:464, xp:2320},
+30:{crystals:254, credit:508, xp:2540},
+};
+function rewardBadge(level){
+const r = REWARDS[level];
+if(!r) return '';
+return `<span class="reward-chip" title="${t('rewardTooltip')(r.crystals, r.credit, r.xp)}">💎${r.crystals}</span>`;
+}
+
 const PATHS = {1: PATH1, 2: PATH2, 3: PATH3, 4: PATH4};
 let currentPath = 3;
 
@@ -628,7 +695,7 @@ currentNeedsEl.innerHTML = "";
 }else{
 const rb = REBIRTHS[currentIdx];
 currentLevelEl.textContent = `Rebirth ${rb.level}`;
-currentCreditsEl.textContent = t('needCredits')(rb.credits);
+currentCreditsEl.innerHTML = t('needCredits')(rb.credits) + ' ' + rewardBadge(rb.level);
 currentNeedsEl.innerHTML = "";
 rb.droids.forEach(([name,tier,reused]) => {
 const chip = document.createElement('div');
@@ -667,6 +734,11 @@ const cred = document.createElement('div');
 cred.className = 'rb-credits';
 cred.textContent = rb.credits;
 left.appendChild(cred);
+if(REWARDS[rb.level]){
+const rw = document.createElement('div');
+rw.innerHTML = rewardBadge(rb.level);
+left.appendChild(rw.firstChild);
+}
 
 const droidsWrap = document.createElement('div');
 droidsWrap.className = 'rb-droids';
@@ -710,6 +782,11 @@ document.getElementById('feedbackText').placeholder = t('feedbackPlaceholder');
 document.getElementById('feedbackCancelBtn').textContent = t('feedbackCancel');
 document.getElementById('feedbackCopyBtn').textContent = t('feedbackCopy');
 document.getElementById('feedbackSendBtn').textContent = t('feedbackSend');
+document.getElementById('spawnBeskarLabel').textContent = t('spawnBeskar');
+document.getElementById('spawnMythicLabel').textContent = t('spawnMythic');
+document.getElementById('spawnGalacticLabel').textContent = t('spawnGalactic');
+document.getElementById('txtDealTitle').textContent = t('dealTitle');
+document.getElementById('reportDealBtn').textContent = t('reportDealBtn');
 }
 
 function render(){
@@ -845,7 +922,76 @@ document.getElementById('tabPath'+q).classList.toggle('active', q === p);
 }catch(e){}
 }
 
+function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+
+function updateSpawnTimers(){
+const now = new Date();
+const s = now.getSeconds();
+const m = now.getMinutes();
+
+// Beskar: every 15 minutes (:00, :15, :30, :45)
+let beskarSecs = ((15 - (m % 15)) * 60) - s;
+if(beskarSecs <= 0) beskarSecs += 15*60;
+if(m % 15 === 0 && s === 0) beskarSecs = 15*60;
+
+// Mythic: every 60 minutes (top of hour)
+let mythicSecs = ((60 - m) * 60) - s;
+if(mythicSecs <= 0) mythicSecs += 60*60;
+
+// Galactic: at :45 every hour
+let galacticMin = m < 45 ? (45 - m) : (45 + 60 - m);
+let galacticSecs = galacticMin * 60 - s;
+if(galacticSecs <= 0) galacticSecs += 3600;
+if(m === 45 && s === 0) galacticSecs = 3600;
+
+function fmt(totalSecs){
+const mm = Math.floor(totalSecs / 60);
+const ss = totalSecs % 60;
+return pad2(mm) + ':' + pad2(ss);
+}
+
+document.getElementById('spawnBeskarLabel').textContent = t('spawnBeskar');
+document.getElementById('spawnMythicLabel').textContent = t('spawnMythic');
+document.getElementById('spawnGalacticLabel').textContent = t('spawnGalactic');
+document.getElementById('spawnBeskarTime').textContent = fmt(beskarSecs);
+document.getElementById('spawnMythicTime').textContent = fmt(mythicSecs);
+document.getElementById('spawnGalacticTime').textContent = fmt(galacticSecs);
+}
+setInterval(updateSpawnTimers, 1000);
+
+const DEAL_REPO = 'deznexen/droidmanage';
+const DEAL_ISSUE = 1;
+
+async function fetchLimitedDeal(){
+const el = document.getElementById('dealContent');
+el.textContent = t('dealLoading');
+try{
+const res = await fetch(`https://api.github.com/repos/${DEAL_REPO}/issues/${DEAL_ISSUE}/comments?sort=created&direction=desc&per_page=1`);
+if(!res.ok) throw new Error('bad response');
+const comments = await res.json();
+if(!comments || comments.length === 0){
+el.textContent = t('dealNone');
+return;
+}
+const latest = comments[0];
+const createdAt = new Date(latest.created_at);
+const minsAgo = Math.max(0, Math.round((Date.now() - createdAt.getTime()) / 60000));
+const who = latest.user && latest.user.login ? latest.user.login : '?';
+const whenText = minsAgo === 0 ? t('dealReportedByNow')(who) : t('dealReportedBy')(who, minsAgo);
+el.innerHTML = `<strong style="color:var(--text);">${latest.body.replace(/</g,'&lt;')}</strong><br>${whenText}`;
+}catch(e){
+el.textContent = t('dealError');
+}
+}
+setInterval(fetchLimitedDeal, 30000);
+
+document.getElementById('reportDealBtn').addEventListener('click', () => {
+window.open(`https://github.com/${DEAL_REPO}/issues/${DEAL_ISSUE}`, '_blank');
+});
+
 async function init(){
+updateSpawnTimers();
+fetchLimitedDeal();
 await loadLangPref();
 await loadCompactPref();
 await loadPathPref();
