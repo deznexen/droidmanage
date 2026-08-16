@@ -1068,4 +1068,111 @@ if(el) el.scrollIntoView({block:'center', behavior:'smooth'});
 }
 
 document.getElementById('feedbackBtn').addEventListener('click', () => {
-document.getElementById('feedbac
+document.getElementById('feedbackModal').style.display = 'flex';
+document.getElementById('feedbackNote').textContent = '';
+});
+document.getElementById('feedbackCancelBtn').addEventListener('click', () => {
+document.getElementById('feedbackModal').style.display = 'none';
+});
+document.getElementById('feedbackModal').addEventListener('click', (e) => {
+if(e.target.id === 'feedbackModal') document.getElementById('feedbackModal').style.display = 'none';
+});
+document.getElementById('feedbackCopyBtn').addEventListener('click', async () => {
+const val = document.getElementById('feedbackText').value.trim();
+if(!val){ document.getElementById('feedbackNote').textContent = t('feedbackEmpty'); return; }
+try{
+await navigator.clipboard.writeText(val);
+document.getElementById('feedbackNote').textContent = t('feedbackCopied');
+}catch(e){
+document.getElementById('feedbackText').select();
+document.execCommand('copy');
+document.getElementById('feedbackNote').textContent = t('feedbackCopied');
+}
+});
+document.getElementById('feedbackSendBtn').addEventListener('click', () => {
+const val = document.getElementById('feedbackText').value.trim();
+if(!val){ document.getElementById('feedbackNote').textContent = t('feedbackEmpty'); return; }
+const title = encodeURIComponent(t('feedbackIssueTitle'));
+const body = encodeURIComponent(val);
+const url = `https://github.com/deznexen/droidmanage/issues/new?title=${title}&body=${body}`;
+window.open(url, '_blank');
+document.getElementById('feedbackModal').style.display = 'none';
+document.getElementById('feedbackText').value = '';
+});
+
+async function loadPathPref(){
+try{
+const v = localStorage.getItem('droid-tycoon-currentpath-p34');
+const p = parseInt(v, 10);
+if(p >= 1 && p <= 5){
+currentPath = p;
+[1,2,3,4,5].forEach(q => {
+document.getElementById('tabPath'+q).classList.toggle('active', q === p);
+});
+}
+}catch(e){}
+}
+
+function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+
+function updateSpawnTimers(){
+const now = new Date();
+const s = now.getSeconds();
+const m = now.getMinutes();
+
+// Beskar: every 15 minutes (:00, :15, :30, :45)
+let beskarSecs = ((15 - (m % 15)) * 60) - s;
+if(beskarSecs <= 0) beskarSecs += 15*60;
+if(m % 15 === 0 && s === 0) beskarSecs = 15*60;
+
+// Mythic: every 60 minutes (top of hour)
+let mythicSecs = ((60 - m) * 60) - s;
+if(mythicSecs <= 0) mythicSecs += 60*60;
+
+// Galactic: at :45 every hour
+let galacticMin = m < 45 ? (45 - m) : (45 + 60 - m);
+let galacticSecs = galacticMin * 60 - s;
+if(galacticSecs <= 0) galacticSecs += 3600;
+if(m === 45 && s === 0) galacticSecs = 3600;
+
+function fmt(totalSecs){
+const mm = Math.floor(totalSecs / 60);
+const ss = totalSecs % 60;
+return pad2(mm) + ':' + pad2(ss);
+}
+
+document.getElementById('spawnBeskarLabel').textContent = t('spawnBeskar');
+document.getElementById('spawnMythicLabel').textContent = t('spawnMythic');
+document.getElementById('spawnGalacticLabel').textContent = t('spawnGalactic');
+document.getElementById('spawnBeskarTime').textContent = fmt(beskarSecs);
+document.getElementById('spawnMythicTime').textContent = fmt(mythicSecs);
+document.getElementById('spawnGalacticTime').textContent = fmt(galacticSecs);
+}
+setInterval(updateSpawnTimers, 1000);
+
+document.getElementById('viewRebirths').addEventListener('click', () => {
+document.getElementById('viewRebirths').classList.add('active');
+document.getElementById('viewRewards').classList.remove('active');
+document.getElementById('rebirthsView').style.display = '';
+document.getElementById('rewardsView').style.display = 'none';
+});
+document.getElementById('viewRewards').addEventListener('click', () => {
+document.getElementById('viewRewards').classList.add('active');
+document.getElementById('viewRebirths').classList.remove('active');
+document.getElementById('rewardsView').style.display = '';
+document.getElementById('rebirthsView').style.display = 'none';
+renderRewardsTable();
+});
+
+async function init(){
+updateSpawnTimers();
+await loadLangPref();
+await loadCompactPref();
+await loadPathPref();
+await loadInventory();
+scrollToCurrent();
+}
+init();
+</script>
+</body>
+</html>
