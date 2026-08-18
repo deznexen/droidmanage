@@ -679,7 +679,7 @@ const PATHS = {1: PATH1, 2: PATH2, 3: PATH3, 4: PATH4, 5: PATH5};
 let currentPath = 3;
 
 const droidSet = new Set();
-[PATH1, PATH2, PATH3, PATH4].forEach(p => p.forEach(rb => rb.droids.forEach(([name]) => droidSet.add(name))));
+[PATH1, PATH2, PATH3, PATH4, PATH5].forEach(p => p.forEach(rb => rb.droids.forEach(([name]) => droidSet.add(name))));
 const droidNames = Array.from(droidSet).sort((a,b)=>a.localeCompare(b));
 
 let inventory = {};
@@ -1175,4 +1175,4 @@ scrollToCurrent();
 init();
 </script>
 </body>
-</html>
+<
