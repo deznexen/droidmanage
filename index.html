@@ -19,6 +19,7 @@
 --beskar:#c0c0c0;
 --galactic:#a78bfa;
 --stellar:#38bdf8;
+--kyber:#34d399;
 --base:#9fd88a;
 --good:#3fb950;
 --bad:#f85149;
@@ -102,6 +103,7 @@ border:1px solid var(--border);display:flex;align-items:center;gap:6px;
 .tier-5{background:var(--beskar);}
 .tier-6{background:var(--galactic);}
 .tier-7{background:var(--stellar);}
+.tier-8{background:var(--kyber);}
 .rarity-badge{
 font-size:.65rem;font-weight:700;padding:1px 5px;border-radius:4px;
 border:1px solid; letter-spacing:.3px;
@@ -302,13 +304,13 @@ sellTitle: "🗑️ Ασφαλές να πουλήσεις",
 sellDesc: (p) => `Droids που δεν χρειάζεσαι πια σε κανένα από τα υπόλοιπα (μη τσεκαρισμένα) rebirths του Path ${p}.`,
 sellEmptyInv: "Δεν έχεις καταχωρήσει ακόμα droids στο απόθεμά σου.",
 sellNothing: "Όλα τα droids που έχεις καταχωρήσει χρειάζονται ακόμα σε κάποιο επόμενο rebirth — μην πουλήσεις τίποτα προς το παρόν.",
-rebirthsTitle: "📋 Όλα τα Rebirths (1–35)",
+rebirthsTitle: "📋 Όλα τα Rebirths (1–40)",
 legendCheck: "☑️ Τσέκαρε ό,τι έχεις ήδη κάνει",
 legendDone: "🟢 Ολοκληρωμένο",
 legendNext: "🔵 Επόμενος στόχος",
 legendTier: "✅/❌ = αν έχεις τώρα το tier του droid στη βάση σου",
 legendReuse: "★ = ξαναχρειάζεται σε επόμενο rebirth — μην το πουλήσεις",
-footnote: `Δεδομένα Path 1–5 (Rebirth 1–35 σε κάθε path, με το νέο STELLAR tier από το Rebirth 31+). Το ★ δείχνει droids που χρειάζονται ξανά σε επόμενο rebirth level στο ίδιο path — καλό είναι να μην τα πουλήσεις πρόωρα.<br>Το χρωματιστό label δίπλα σε κάθε droid (Common/Rare/Epic/Legendary/Mythic) δείχνει τη rarity του, από τον επίσημο πίνακα Droidex.<br>Τα 💎 Nova Crystals και τα ποσοστά credit/XP multiplier ανά rebirth (από RB12+) είναι από το community "RBC Check Sheet" (credit: starscurse) — πέρασε πάνω από το 💎 badge για λεπτομέρειες.<br>Οι χρόνοι spawn (Beskar/Mythic/Galactic) είναι υπολογισμένοι με βάση την τοπική ώρα του browser σου· αν το παιχνίδι χρησιμοποιεί διαφορετική ζώνη ώρας server, μπορεί να διαφέρουν ελαφρώς.<br>Επειδή η βάση σου έχει όριο στο πόσα droids μπορείς να έχεις ταυτόχρονα, η πρόοδος/επόμενος στόχος υπολογίζεται από το checkbox που τσεκάρεις εσύ σε κάθε rebirth ("το έχω κάνει"), όχι αυτόματα από το inventory. Το inventory panel και τα ✅/❌ δίπλα σε κάθε droid μένουν σαν βοήθημα.`,
+footnote: `Δεδομένα Path 1–5 (Rebirth 1–40 σε κάθε path, με STELLAR tier από το Rebirth 31+ και KYBER από το Rebirth 36+ — τα Kyber droids πρέπει να είναι ενεργοποιημένα για να μετράνε στις απαιτήσεις). Το ★ δείχνει droids που χρειάζονται ξανά σε επόμενο rebirth level στο ίδιο path — καλό είναι να μην τα πουλήσεις πρόωρα.<br>Το χρωματιστό label δίπλα σε κάθε droid (Common/Rare/Epic/Legendary/Mythic) δείχνει τη rarity του, από τον επίσημο πίνακα Droidex.<br>Τα 💎 Nova Crystals και τα ποσοστά credit/XP multiplier ανά rebirth (από RB12+) είναι από το community "RBC Check Sheet" (credit: starscurse) — πέρασε πάνω από το 💎 badge για λεπτομέρειες.<br>Οι χρόνοι spawn (Beskar/Mythic/Galactic) είναι υπολογισμένοι με βάση την τοπική ώρα του browser σου· αν το παιχνίδι χρησιμοποιεί διαφορετική ζώνη ώρας server, μπορεί να διαφέρουν ελαφρώς.<br>Επειδή η βάση σου έχει όριο στο πόσα droids μπορείς να έχεις ταυτόχρονα, η πρόοδος/επόμενος στόχος υπολογίζεται από το checkbox που τσεκάρεις εσύ σε κάθε rebirth ("το έχω κάνει"), όχι αυτόματα από το inventory. Το inventory panel και τα ✅/❌ δίπλα σε κάθε droid μένουν σαν βοήθημα.`,
 allDone: "Όλα ολοκληρωμένα! 🎉",
 allDoneDesc: (total, p) => `Έχεις σημειώσει όλα τα rebirths ως και το ${total} του Path ${p}.`,
 needCredits: (c) => `Χρειάζεσαι: ${c} credits`,
@@ -359,13 +361,13 @@ sellTitle: "🗑️ Safe to sell",
 sellDesc: (p) => `Droids you no longer need for any remaining (unchecked) rebirths in Path ${p}.`,
 sellEmptyInv: "You haven't added any droids to your inventory yet.",
 sellNothing: "Every droid you've logged is still needed for an upcoming rebirth — don't sell anything yet.",
-rebirthsTitle: "📋 All Rebirths (1–35)",
+rebirthsTitle: "📋 All Rebirths (1–40)",
 legendCheck: "☑️ Check off what you've already done",
 legendDone: "🟢 Completed",
 legendNext: "🔵 Next target",
 legendTier: "✅/❌ = whether you currently have that droid's tier on your base",
 legendReuse: "★ = needed again in a later rebirth — don't sell it",
-footnote: `Path 1–5 data (Rebirth 1–35 in each path, including the new STELLAR tier from Rebirth 31+). ★ marks droids needed again at a later rebirth level in the same path — don't sell those early.<br>The colored label next to each droid (Common/Rare/Epic/Legendary/Mythic) shows its rarity, from the official Droidex table.<br>The 💎 Nova Crystals and credit/XP multiplier percentages per rebirth (from RB12+) come from the community "RBC Check Sheet" (credit: starscurse) — hover the 💎 badge for details.<br>Spawn times (Beskar/Mythic/Galactic) are calculated from your browser's local clock; if the game uses a different server time zone they may be slightly off.<br>Because your base has a limit on how many droids you can hold at once, progress/next target is driven by the checkbox you tick on each rebirth ("done it"), not automatically from your inventory. The inventory panel and the ✅/❌ next to each droid are just a helper.`,
+footnote: `Path 1–5 data (Rebirth 1–40 in each path, with the STELLAR tier from Rebirth 31+ and KYBER from Rebirth 36+ — Kyber droids must be activated to count toward requirements). ★ marks droids needed again at a later rebirth level in the same path — don't sell those early.<br>The colored label next to each droid (Common/Rare/Epic/Legendary/Mythic) shows its rarity, from the official Droidex table.<br>The 💎 Nova Crystals and credit/XP multiplier percentages per rebirth (from RB12+) come from the community "RBC Check Sheet" (credit: starscurse) — hover the 💎 badge for details.<br>Spawn times (Beskar/Mythic/Galactic) are calculated from your browser's local clock; if the game uses a different server time zone they may be slightly off.<br>Because your base has a limit on how many droids you can hold at once, progress/next target is driven by the checkbox you tick on each rebirth ("done it"), not automatically from your inventory. The inventory panel and the ✅/❌ next to each droid are just a helper.`,
 allDone: "All done! 🎉",
 allDoneDesc: (total, p) => `You've marked all rebirths up to ${total} in Path ${p} as done.`,
 needCredits: (c) => `You need: ${c} credits`,
@@ -402,11 +404,11 @@ removeFromInventory: "Remove from inventory",
 function t(key){ return TRANSLATIONS[lang][key]; }
 
 const TIER_LABELS = {
-el: ["Καμία","Base","Gold","Diamond","Rainbow","Beskar","Galactic","Stellar"],
-en: ["None","Base","Gold","Diamond","Rainbow","Beskar","Galactic","Stellar"]
+el: ["Καμία","Base","Gold","Diamond","Rainbow","Beskar","Galactic","Stellar","Kyber"],
+en: ["None","Base","Gold","Diamond","Rainbow","Beskar","Galactic","Stellar","Kyber"]
 };
 let TIERS = TIER_LABELS[lang];
-const TIER_CLASS = ["tier-0","tier-1","tier-2","tier-3","tier-4","tier-5","tier-6","tier-7"];
+const TIER_CLASS = ["tier-0","tier-1","tier-2","tier-3","tier-4","tier-5","tier-6","tier-7","tier-8"];
 
 // Rarity confirmed from the official Droidex table (canonical English values).
 const RARITY = {
@@ -475,6 +477,11 @@ const PATH1 = [
 {level:33, credits:"345T", droids:[d("B1 Heavy",7),d("Cyclo-Grav",6),d("DRFT-R",6)]},
 {level:34, credits:"520T", droids:[d("Groundmech",7),d("BB",7),d("Cyclens",6)]},
 {level:35, credits:"778T", droids:[d("BB9",7),d("IG",7),d("Snow Mouse",7)]},
+{level:36, credits:"1.19Qa", droids:[d("BDX Explorer",8),d("2BB",8),d("A-LT",8)]},
+{level:37, credits:"2.50Qa", droids:[d("B1 Heavy",8),d("Groundmech",8),d("BB",8)]},
+{level:38, credits:"4.50Qa", droids:[d("R2",8),d("R6",8),d("BB9",8)]},
+{level:39, credits:"8.00Qa", droids:[d("R7",8),d("Proto-Roller",8),d("IG",8)]},
+{level:40, credits:"15.00Qa", droids:[d("Snow Mouse",8),d("DRFT-R",8),d("Cyclens",8)]},
 ];
 
 const PATH2 = [
@@ -513,6 +520,11 @@ const PATH2 = [
 {level:33, credits:"345T", droids:[d("R2",7),d("Opti-Strike",6),d("KX",6)]},
 {level:34, credits:"520T", droids:[d("R6",7),d("LO",7),d("RIC",6)]},
 {level:35, credits:"778T", droids:[d("R7",7),d("DRFT-R",7),d("Cyclens",7)]},
+{level:36, credits:"1.19Qa", droids:[d("B1 Security",8),d("R4",8),d("R9",8)]},
+{level:37, credits:"2.50Qa", droids:[d("LO",8),d("Trak-R",8),d("Orb-Walker",8)]},
+{level:38, credits:"4.50Qa", droids:[d("B2 Super",8),d("B2 Heavy",8),d("B2-RP",8)]},
+{level:39, credits:"8.00Qa", droids:[d("Mecha-Droid",8),d("Cyclo-Grav",8),d("KX",8)]},
+{level:40, credits:"15.00Qa", droids:[d("RIC",8),d("Loadlifter",8),d("LEP",8)]},
 ];
 
 const PATH3 = [
@@ -551,6 +563,11 @@ const PATH3 = [
 {level:33, credits:"345T", droids:[d("Trak-R",7),d("Mono-Walker",6),d("Loadlifter",6)]},
 {level:34, credits:"520T", droids:[d("Orb-Walker",7),d("B2 Super",7),d("LEP",6)]},
 {level:35, credits:"778T", droids:[d("Proto-Roller",7),d("KX",7),d("RIC",7)]},
+{level:36, credits:"1.19Qa", droids:[d("ARG",8),d("Senate Hovercam",8),d("BU-4D",8)]},
+{level:37, credits:"2.50Qa", droids:[d("Strike-Orb",8),d("AMP Walker",8),d("Util-Tech",8)]},
+{level:38, credits:"4.50Qa", droids:[d("Haul-R",8),d("LNG-Shot",8),d("Opti-Strike",8)]},
+{level:39, credits:"8.00Qa", droids:[d("Mono-Walker",8),d("BB9",8),d("RIC-1200",8)]},
+{level:40, credits:"15.00Qa", droids:[d("MO-Trak",8),d("Tri-Tek",8),d("IG",8)]},
 ];
 
 const PATH4 = [
@@ -589,6 +606,11 @@ const PATH4 = [
 {level:33, credits:"345T", droids:[d("B2 Heavy",7),d("BB9",6),d("RIC-1200",6)]},
 {level:34, credits:"520T", droids:[d("Strike-Orb",7),d("AMP Walker",7),d("MO-Trak",6)]},
 {level:35, credits:"778T", droids:[d("B2-RP",7),d("Loadlifter",7),d("LEP",7)]},
+{level:36, credits:"1.19Qa", droids:[d("NAV-EX",8),d("Bal-Core",8),d("Vect-Arm",8)]},
+{level:37, credits:"2.50Qa", droids:[d("Sen-Tri",8),d("Opti-Pod",8),d("Gunrunner",8)]},
+{level:38, credits:"4.50Qa", droids:[d("B1 Heavy",8),d("Groundmech",8),d("R7",8)]},
+{level:39, credits:"8.00Qa", droids:[d("Proto-Roller",8),d("B2-RP",8),d("Snow Mouse",8)]},
+{level:40, credits:"15.00Qa", droids:[d("DRFT-R",8),d("Cyclens",8),d("KX",8)]},
 ];
 
 const PATH5 = [
@@ -627,6 +649,11 @@ const PATH5 = [
 {level:33, credits:"345T", droids:[d("Util-Tech",7),d("R7",6),d("Tri-Tek",6)]},
 {level:34, credits:"520T", droids:[d("Haul-R",7),d("LNG-Shot",7),d("IG",6)]},
 {level:35, credits:"778T", droids:[d("Mecha-Droid",7),d("RIC-1200",7),d("MO-Trak",7)]},
+{level:36, credits:"1.19Qa", droids:[d("Mouse",8),d("Roll-R",8),d("HOV-R",8)]},
+{level:37, credits:"2.50Qa", droids:[d("BB",8),d("R2",8),d("R6",8)]},
+{level:38, credits:"4.50Qa", droids:[d("LO",8),d("Trak-R",8),d("Mecha-Droid",8)]},
+{level:39, credits:"8.00Qa", droids:[d("Cyclo-Grav",8),d("Opti-Strike",8),d("RIC",8)]},
+{level:40, credits:"15.00Qa", droids:[d("Loadlifter",8),d("LEP",8),d("RIC-1200",8)]},
 ];
 
 // Super Rebirth Cycle rewards per rebirth level (Nova Crystals + Credit/XP multipliers),
@@ -653,7 +680,7 @@ return `<span class="reward-chip" title="${t('rewardTooltip')(r.crystals, r.cred
 function renderRewardsTable(){
 const el = document.getElementById('rewardsTable');
 let rows = '';
-for(let lvl = 1; lvl <= 35; lvl++){
+for(let lvl = 1; lvl <= 40; lvl++){
 const r = REWARDS[lvl];
 rows += `<tr>
 <td class="lvl-cell">${lvl}</td>
@@ -1175,4 +1202,4 @@ scrollToCurrent();
 init();
 </script>
 </body>
-<
+</html>
